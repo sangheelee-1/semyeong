@@ -698,6 +698,10 @@
       <svg class="kico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3C6.5 3 2 6.6 2 11c0 2.8 1.9 5.3 4.7 6.7-.2.7-.7 2.6-.8 3-.1.5.2.5.4.4.2-.1 2.6-1.8 3.7-2.5.6.1 1.3.1 2 .1 5.5 0 10-3.6 10-8S17.5 3 12 3z"/></svg>
       <span class="ktxt">카카오톡으로 공유</span>
     </button>
+    <button class="btn-ghost rv" type="button" onclick="shareTelegram()">
+      <svg class="kico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.6 18.8 19c-.23 1.02-.84 1.27-1.7.79l-4.7-3.46-2.27 2.18c-.25.25-.46.46-.94.46l.34-4.8L18.2 6.3c.38-.34-.08-.53-.59-.19l-10.8 6.8-4.65-1.45c-1.01-.32-1.03-1.01.21-1.5L20.6 3.1c.84-.31 1.58.2 1.3 1.5z"/></svg>
+      <span class="tgtxt">텔레그램으로 공유</span>
+    </button>
     <div class="note rv d1">프리미엄 매일 10명 한정 · 歲命 JUPITER · 知未來 命由己</div>
   </section>
 
@@ -847,6 +851,14 @@
       },
       buttons:[{ title:'무료 진단 받기', link:{ mobileWebUrl:SITE_URL, webUrl:SITE_URL } }]
     });
+  }
+
+  /* 텔레그램 공유: SDK·키 불필요, og 카드 자동 표시. 현재 언어의 링크·제목으로 공유 */
+  function shareTelegram(){
+    const L = window.LANG || 'ko';
+    const titles = {ko:'歲命 · JUPITER — 우주의 리듬을 읽다', en:'歲命 JUPITER — Reading the Rhythms of the Cosmos', ja:'歲命 JUPITER — 宇宙のリズムを読む'};
+    const u = SITE_URL + (L==='ko' ? '' : '/?lang='+L);
+    window.open('https://t.me/share/url?url='+encodeURIComponent(u)+'&text='+encodeURIComponent(titles[L]), '_blank', 'noopener');
   }
 
   /* ===== stellar_booking 연동 =====
@@ -1063,6 +1075,7 @@ const I18N = [
   {q:'.tier .btn', en:"Start Premium <span class='arw'>→</span>", ja:"プレミアムを始める <span class='arw'>→</span>"},
   // share cta
   {q:'.cta .ktxt', en:"Share via KakaoTalk", ja:"カカオトークで共有"},
+  {q:'.cta .tgtxt', en:"Share via Telegram", ja:"Telegramで共有"},
   {q:'.cta .note', en:"Premium: 10 a day · 歲命 JUPITER · 知未來 命由己", ja:"プレミアム毎日10名限定 · 歲命 JUPITER · 知未來 命由己"}
 ];
 const PAGE_TITLE = {ko:"歲命 · JUPITER — 우주의 리듬을 읽다", en:"歲命 JUPITER — Reading the Rhythms of the Cosmos", ja:"歲命 JUPITER — 宇宙のリズムを読む"};
