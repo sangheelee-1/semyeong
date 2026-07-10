@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>歲命 · JUPITER — 우주의 리듬을 읽다</title>
+
+<!-- ===== 카카오톡/SNS 링크 카드 (Open Graph) =====
+     배포 후 아래 YOUR_DOMAIN 을 실제 주소로 교체하십시오.
+     og:image 는 반드시 절대경로(https://...)여야 카톡에 썸네일이 뜹니다. 권장 1200×630 -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="歲命 · JUPITER — 우주의 리듬을 읽다">
+<meta property="og:description" content="사주(四柱)와 천문(天文)의 융합 — 달이 바다를 움직이듯, 행성들의 주기가 당신의 삶에 리듬을 새깁니다. 지금 무료로 확인하십시오.">
+<meta property="og:image" content="https://sangheelee-1.github.io/semyeong/og-image.png">
+<meta property="og:url" content="https://sangheelee-1.github.io/semyeong/">
+<meta property="og:site_name" content="歲命 JUPITER">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="description" content="사주(四柱)와 천문(天文)의 융합 — 달이 바다를 움직이듯, 행성들의 주기가 당신의 삶에 리듬을 새깁니다. 동서 통합 운명 분석 歲命 JUPITER.">
+<link rel="canonical" href="https://sangheelee-1.github.io/semyeong/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2307061a'/%3E%3Ctext x='32' y='45' font-size='34' text-anchor='middle' fill='%23d4af37' font-family='serif'%3E%E6%AD%B2%3C/text%3E%3C/svg%3E">
+<noscript><style>.rv{opacity:1!important;transform:none!important}</style></noscript>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500&family=Noto+Serif+JP:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme:dark;        /* 네이티브 date/time 위젯을 다크로 */
+    --space:#07061a;          /* deep space navy */
+    --space-2:#0d0b26;        /* slightly lifted panel */
+    --ocean:#20486b;          /* tidal ocean */
+    --ocean-hi:#3a6d97;
+    --jupiter:#b5763f;        /* jovian band brown */
+    --jupiter-hi:#d99b5c;     /* lit limb */
+    --cream:#e8dcc0;          /* great red spot cream */
+    --gold:#d4af37;           /* signature gold */
+    --gold-soft:#c9a86a;
+    --ink:#eae6da;            /* warm white text */
+    --ink-dim:#9a95a8;        /* muted */
+    --line:rgba(212,175,55,.22);
+    --maxw:1180px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--space);
+    color:var(--ink);
+    font-family:"Noto Sans KR",sans-serif;
+    line-height:1.8;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    word-break:keep-all;overflow-wrap:break-word;
+  }
+  /* starfield */
+  .stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .stars canvas{display:block}
+
+  /* jupiter photo backdrop — 실사(카시니, NASA/JPL/SSI). 사진의 검은 여백은 낮은 opacity로 네이비에 잠김 */
+  .jupiter-bg{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+  .jupiter-bg img{
+    position:absolute;top:50%;right:-14vmax;height:min(172vh,2400px);width:auto;
+    opacity:.38;filter:saturate(.92);
+    animation:jupdrift 240s ease-in-out infinite alternate;
+  }
+  @keyframes jupdrift{
+    from{transform:translateY(-53%) translateX(0) scale(1)}
+    to{transform:translateY(-47%) translateX(-2.6vw) scale(1.055)}
+  }
+  /* 본문(좌측) 가독 보호막: 왼쪽으로 갈수록 우주색으로 잠김 */
+  .jupiter-bg::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(90deg,var(--space) 0%,rgba(7,6,26,.55) 38%,rgba(7,6,26,.18) 68%,rgba(7,6,26,.32) 100%);
+  }
+  @media(max-width:820px){
+    .jupiter-bg img{height:120vh;right:-34vh;opacity:.34} /* vh 기준: 가로모드 폰에서도 행성이 화면에 남게 */
+  }
+  @media(prefers-reduced-motion:reduce){
+    .jupiter-bg img{animation:none;transform:translateY(-50%)}
+  }
+
+  .wrap{position:relative;z-index:2}
+  section{padding:clamp(90px,14vh,170px) clamp(22px,6vw,64px);max-width:var(--maxw);margin:0 auto}
+
+  /* type roles */
+  .eyebrow{
+    font-family:"JetBrains Mono",monospace;
+    font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--gold);opacity:.85;margin-bottom:26px;
+    display:flex;align-items:center;gap:14px;
+  }
+  .eyebrow::before{content:"";width:34px;height:1px;background:var(--gold);opacity:.6}
+  h1,h2,h3{font-family:"Noto Serif KR",serif;font-weight:500;letter-spacing:-.01em;word-break:keep-all}
+  .hanja{font-family:"Noto Serif KR",serif}
+  /* 한자 독음 루비: 아주 작은 한글 읽기 보조 (디자인 무해 범위) */
+  rt{font-family:"Noto Sans KR",sans-serif;font-weight:300;font-size:max(.42em,9px);color:var(--ink-dim);letter-spacing:.05em;opacity:.85}
+  /* 언어 전환: EN/JA에서는 한글 독음 숨김, JA는 일본어 폰트로 */
+  html[data-lang="en"] rt,html[data-lang="ja"] rt{display:none}
+  html[data-lang="ja"] body,html[data-lang="ja"] .fg input,html[data-lang="ja"] .fg select{font-family:"Noto Sans JP","Noto Sans KR",sans-serif}
+  html[data-lang="ja"] :is(h1,h2,h3,.hanja,.tprice,.seal,.ask,.ask-sm,.lead,.brandmark,.xrow .t){font-family:"Noto Serif JP","Noto Serif KR",serif}
+  .langs{
+    position:fixed;top:clamp(24px,4vw,44px);right:clamp(22px,6vw,64px);z-index:6;
+    display:flex;gap:4px;font-family:"JetBrains Mono",monospace;font-size:.66rem;letter-spacing:.14em;
+  }
+  .langs button{
+    background:none;border:none;color:var(--ink-dim);cursor:pointer;
+    font:inherit;letter-spacing:inherit;padding:4px 6px;border-bottom:1px solid transparent;
+  }
+  .langs button:hover{color:var(--ink)}
+  .langs button[aria-current="true"]{color:var(--gold);border-bottom-color:var(--gold)}
+  .langs span{color:rgba(154,149,168,.4);padding:4px 0}
+  .lead{font-size:clamp(1.05rem,1.6vw,1.28rem);color:var(--ink);max-width:56ch}
+  .dim{color:var(--ink-dim)}
+  .serif-en{font-family:"Cormorant Garamond",serif}
+
+  /* reveal */
+  .rv{opacity:0;transform:translateY(34px);transition:opacity 1.1s cubic-bezier(.2,.7,.2,1),transform 1.1s cubic-bezier(.2,.7,.2,1)}
+  .rv.in{opacity:1;transform:none}
+  .rv.d1{transition-delay:.12s}.rv.d2{transition-delay:.24s}.rv.d3{transition-delay:.36s}
+
+  /* ============ HERO ============ */
+  .hero{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:center;max-width:var(--maxw)}
+  .hero .kicker{font-family:"JetBrains Mono",monospace;font-size:.72rem;letter-spacing:.3em;color:var(--gold-soft);text-transform:uppercase;margin-bottom:34px}
+  .hero h1{font-size:clamp(2.4rem,6.4vw,5.1rem);line-height:1.12;font-weight:600;margin-bottom:12px}
+  .hero h1 .accent{color:var(--gold);font-style:italic;font-family:"Cormorant Garamond",serif;font-weight:500}
+  .hero .sub{margin-top:38px;font-size:clamp(1.05rem,1.7vw,1.35rem);color:var(--ink-dim);max-width:44ch}
+  .hero .sub b{color:var(--ink);font-weight:500}
+  .hero .ask{margin-top:30px;font-family:"Noto Serif KR",serif;font-weight:400;font-size:clamp(1.2rem,2.1vw,1.6rem);color:var(--gold);max-width:32ch;line-height:1.5}
+  .hero .ask span{display:block;font-family:"JetBrains Mono",monospace;font-size:.7rem;letter-spacing:.24em;color:var(--ink-dim);text-transform:uppercase;margin-bottom:12px}
+  .ask-sm{font-family:"Noto Serif KR",serif;color:var(--gold-soft);font-size:clamp(1rem,1.5vw,1.2rem);line-height:1.6;margin-bottom:18px}
+  .scrollcue{margin-top:70px;font-family:"JetBrains Mono",monospace;font-size:.7rem;letter-spacing:.24em;color:var(--ink-dim);display:flex;align-items:center;gap:12px;text-transform:uppercase}
+  .scrollcue .bar{width:1px;height:44px;background:linear-gradient(var(--gold),transparent);display:inline-block;animation:drop 2.4s ease-in-out infinite}
+  @keyframes drop{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(8px)}}
+  .hero-cta{margin-top:44px;display:flex;align-items:center;gap:clamp(20px,4vw,42px);flex-wrap:wrap}
+  .hero-cta .scrollcue{margin-top:0}
+
+  .brandmark{position:absolute;top:clamp(24px,4vw,44px);left:clamp(22px,6vw,64px);z-index:5;font-family:"Noto Serif KR",serif;font-size:1.05rem;letter-spacing:.14em;color:var(--gold)}
+  .brandmark small{display:block;font-family:"JetBrains Mono",monospace;font-size:.58rem;letter-spacing:.3em;color:var(--ink-dim);margin-top:3px}
+
+  /* ============ chapter scaffold ============ */
+  .chap{display:grid;grid-template-columns:1fr 1fr;gap:clamp(36px,6vw,88px);align-items:center}
+  .chap .viz{position:relative;min-height:400px;display:flex;align-items:center;justify-content:center}
+  .chap.flip .viz{order:2}
+  .chap-num{font-family:"JetBrains Mono",monospace;font-size:.72rem;letter-spacing:.26em;color:var(--gold);margin-bottom:22px}
+  .chap h2{font-size:clamp(1.7rem,3.4vw,2.7rem);line-height:1.24;margin-bottom:24px}
+  .chap h2 em{font-style:normal;color:var(--gold)}
+  .chap p{margin-bottom:18px}
+  .fact{
+    margin-top:26px;padding:18px 22px;border-left:2px solid var(--gold);
+    background:linear-gradient(90deg,rgba(212,175,55,.06),transparent);
+    font-family:"JetBrains Mono",monospace;font-size:.82rem;line-height:1.9;color:var(--gold-soft);
+  }
+  .fact b{color:var(--ink);font-weight:500}
+
+  /* tidal viz */
+  .earth-sys{width:min(420px,80vw);aspect-ratio:1;position:relative}
+
+  /* jupiter scale viz */
+  .scaleviz{width:min(440px,82vw);position:relative}
+  .scaleviz .lbl{font-family:"JetBrains Mono",monospace;font-size:.68rem;letter-spacing:.14em;fill:var(--ink-dim)}
+  .scaleviz .lbl-gold{fill:var(--gold-soft)}
+
+  /* nine clocks viz (행성 주기) */
+  .clockviz{width:min(470px,86vw)}
+  .clockviz .el{font-family:"Noto Serif KR",serif;font-size:15px;fill:var(--gold-soft)}
+  .clockviz .cap{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:2px;fill:var(--ink-dim)}
+
+  /* ============ SIGNATURE: 12-year orbit → 십이지 ============ */
+  .sig{max-width:var(--maxw);text-align:center}
+  .sig .eyebrow{justify-content:center}
+  .sig h2{font-size:clamp(1.8rem,3.6vw,2.9rem);line-height:1.28;margin:0 auto 20px;max-width:20ch}
+  .sig h2 em{font-style:normal;color:var(--gold)}
+  .sig .lead{margin:0 auto 54px}
+  .orbit-stage{position:relative;width:min(560px,90vw);aspect-ratio:1;margin:0 auto}
+  .orbit-cap{margin-top:44px;display:flex;gap:clamp(20px,5vw,64px);justify-content:center;flex-wrap:wrap}
+  .orbit-cap div{max-width:22ch;text-align:left}
+  .orbit-cap .k{font-family:"JetBrains Mono",monospace;font-size:.68rem;letter-spacing:.2em;color:var(--gold);margin-bottom:8px;text-transform:uppercase}
+  .orbit-cap .v{font-size:.92rem;color:var(--ink-dim)}
+  .orbit-cap .v b{color:var(--ink);font-weight:500}
+
+  /* ============ correspondence / conclusion ============ */
+  .creed{max-width:860px;text-align:center}
+  .creed .eyebrow{justify-content:center}
+  .creed h2{font-size:clamp(1.9rem,4vw,3.1rem);line-height:1.34;margin-bottom:34px}
+  .creed h2 em{font-style:normal;color:var(--gold)}
+  .creed .body{font-size:clamp(1.05rem,1.6vw,1.24rem);color:var(--ink-dim);max-width:60ch;margin:0 auto 22px}
+  .creed .body b{color:var(--ink);font-weight:500}
+  .honest{margin:44px auto 0;max-width:60ch;padding:26px 30px;border:1px solid var(--line);border-radius:2px;background:var(--space-2)}
+  .honest .t{font-family:"JetBrains Mono",monospace;font-size:.68rem;letter-spacing:.24em;color:var(--gold);text-transform:uppercase;margin-bottom:14px}
+  .honest p{font-size:.98rem;color:var(--ink-dim)}
+  .honest p b{color:var(--ink);font-weight:500}
+
+  /* ============ correspondence table (오행↔4원소 · 십이지↔십이궁) ============ */
+  .pairs{max-width:960px}
+  .pairs .eyebrow{justify-content:center}
+  .pairs h2{text-align:center;font-size:clamp(1.7rem,3.4vw,2.6rem);margin-bottom:14px}
+  .pairs h2 em{font-style:normal;color:var(--gold)}
+  .pairs .sub{text-align:center;color:var(--ink-dim);max-width:54ch;margin:0 auto 50px}
+  .xrow{display:grid;grid-template-columns:1fr 52px 1fr;align-items:center;gap:10px;padding:26px 0;border-bottom:1px dashed rgba(212,175,55,.16)}
+  .xrow:first-of-type{border-top:1px dashed rgba(212,175,55,.16)}
+  .xrow .k{font-family:"JetBrains Mono",monospace;font-size:.64rem;letter-spacing:.2em;color:var(--gold-soft);text-transform:uppercase;margin-bottom:8px}
+  .xrow .t{font-family:"Noto Serif KR",serif;font-size:1.08rem;color:var(--ink);margin-bottom:6px}
+  .xrow .s{font-size:.86rem;color:var(--ink-dim)}
+  .xrow .mid{text-align:center;color:var(--gold);font-family:"Cormorant Garamond",serif;font-size:1.4rem;opacity:.85}
+  .xnote{margin-top:34px;text-align:center;color:var(--ink-dim);font-size:.95rem;max-width:56ch;margin-left:auto;margin-right:auto}
+  .xnote b{color:var(--ink);font-weight:500}
+  @media(max-width:820px){
+    .xrow{grid-template-columns:1fr;gap:14px}
+    .xrow .mid{display:none}
+  }
+
+  .seal{font-family:"Noto Serif KR",serif;font-size:clamp(2rem,5vw,3.4rem);color:var(--gold);letter-spacing:.22em;margin:64px 0 10px}
+  .seal-sub{font-family:"JetBrains Mono",monospace;font-size:.74rem;letter-spacing:.28em;color:var(--ink-dim);text-transform:uppercase}
+
+  /* CTA */
+  .cta{max-width:var(--maxw);text-align:center;padding-bottom:clamp(120px,18vh,200px)}
+  .cta h3{font-size:clamp(1.5rem,3vw,2.3rem);margin-bottom:20px}
+  .cta p{color:var(--ink-dim);max-width:48ch;margin:0 auto 40px}
+  .btn{
+    display:inline-flex;align-items:center;gap:14px;
+    padding:17px 40px;border:1px solid var(--gold);color:var(--space);
+    background:var(--gold);font-family:"Noto Sans KR";font-weight:500;font-size:1rem;
+    letter-spacing:.02em;border-radius:2px;text-decoration:none;cursor:pointer;
+    transition:transform .3s ease,box-shadow .3s ease;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(212,175,55,.28)}
+  .btn:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+  .btn .arw{font-family:"JetBrains Mono",monospace}
+  .btn-ghost{
+    display:inline-flex;align-items:center;gap:10px;margin-left:14px;
+    padding:17px 30px;border:1px solid var(--line);color:var(--ink);background:transparent;
+    font-family:"Noto Sans KR";font-weight:500;font-size:.95rem;border-radius:2px;cursor:pointer;
+    text-decoration:none;transition:border-color .3s ease,background .3s ease;
+  }
+  .btn-ghost:hover{border-color:var(--gold);background:rgba(212,175,55,.06)}
+  .btn-ghost:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+  .btn-ghost .kico{width:16px;height:16px;display:inline-block}
+  .cta .note{margin-top:22px;font-family:"JetBrains Mono",monospace;font-size:.7rem;letter-spacing:.16em;color:var(--ink-dim);text-transform:uppercase}
+
+  hr.div{border:0;height:1px;background:var(--line);max-width:var(--maxw);margin:0 auto}
+
+  /* ============ PRICING ============ */
+  .pricing{max-width:var(--maxw)}
+  .pricing .eyebrow{justify-content:center}
+  .pricing h2{text-align:center;font-size:clamp(1.7rem,3.4vw,2.6rem);margin-bottom:14px}
+  .pricing .sub{text-align:center;color:var(--ink-dim);max-width:52ch;margin:0 auto 56px}
+  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1080px;margin:0 auto}
+  @media(max-width:1080px){.tiers{grid-template-columns:1fr;max-width:520px}}
+  .tier{border:1px solid var(--line);background:var(--space-2);border-radius:3px;padding:40px 36px;position:relative;display:flex;flex-direction:column}
+  .tier.hot{border-color:var(--gold);box-shadow:0 0 60px rgba(212,175,55,.10)}
+  .tier .badge{position:absolute;top:-11px;left:36px;background:var(--gold);color:var(--space);font-family:"JetBrains Mono","Noto Sans KR",monospace;font-size:.62rem;letter-spacing:.14em;padding:4px 12px;border-radius:2px}
+  .tier .tname{font-family:"JetBrains Mono","Noto Sans KR",monospace;font-size:.72rem;letter-spacing:.18em;color:var(--gold-soft);text-transform:uppercase;margin-bottom:10px}
+  .tier .tprice{font-family:"Noto Serif KR",serif;font-size:2.2rem;color:var(--ink);margin-bottom:4px}
+  .tier .tprice small{font-size:.95rem;color:var(--ink-dim);font-family:"Noto Sans KR"}
+  .tier .tdesc{font-size:.92rem;color:var(--ink-dim);margin-bottom:26px;min-height:3em}
+  .tier ul{list-style:none;margin-bottom:30px}
+  .tier li{padding:9px 0;border-bottom:1px dashed rgba(212,175,55,.14);font-size:.93rem;color:var(--ink)}
+  .tier li::before{content:"◆ ";content:"◆ " / "";color:var(--gold);font-size:.6rem;vertical-align:2px} /* alt "" = 스크린리더 무음 */
+  .tier li.mut{color:var(--ink-dim)}
+  .tier .btn,.tier .btn-ghost{width:100%;justify-content:center;margin:auto 0 0}
+
+  /* ============ BOOKING FORM ============ */
+  .book{max-width:760px}
+  .book .eyebrow{justify-content:center}
+  .book h2{text-align:center;font-size:clamp(1.6rem,3vw,2.4rem);margin-bottom:12px}
+  .book .sub{text-align:center;color:var(--ink-dim);margin-bottom:48px}
+  .form{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .fg{display:flex;flex-direction:column;gap:8px}
+  .fg.full{grid-column:1/-1}
+  .fg label{font-family:"JetBrains Mono",monospace;font-size:.66rem;letter-spacing:.2em;color:var(--gold-soft);text-transform:uppercase}
+  .fg input,.fg select{
+    background:var(--space-2);border:1px solid var(--line);border-radius:2px;
+    padding:14px 16px;color:var(--ink);font-family:"Noto Sans KR";font-size:1rem; /* 16px 미만이면 iOS가 포커스 시 강제 줌 */
+    transition:border-color .3s ease;
+  }
+  .fg input:focus,.fg select:focus{outline:none;border-color:var(--gold)}
+  .fg input::placeholder{color:rgba(154,149,168,.5)}
+  /* 개인정보 수집·이용 동의 (개인정보보호법 §15·§22) */
+  .consent{grid-column:1/-1;font-size:.85rem;color:var(--ink-dim)}
+  .consent label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+  .consent input{accent-color:var(--gold);width:16px;height:16px;margin-top:5px;flex:none}
+  .consent b{color:var(--ink);font-weight:500}
+  .consent .more{background:none;border:none;color:var(--gold-soft);text-decoration:underline;cursor:pointer;font-size:.85rem;padding:0;font-family:inherit}
+  .consent .detail{margin-top:10px;padding:12px 16px;border:1px dashed var(--line);border-radius:2px;font-size:.8rem;line-height:1.9}
+  .form .btn{grid-column:1/-1;justify-content:center;margin-top:10px}
+  .fmsg{grid-column:1/-1;text-align:center;font-size:.9rem;min-height:1.4em}
+  .fmsg.ok{color:var(--gold)}
+  .fmsg.err{color:#c96a5a}
+  /* 선택 등급 칩: 가격 카드에서 넘어온 사용자에게 현재 선택을 보여줌 */
+  .tier-pick{text-align:center;margin:-20px 0 30px}
+  .tier-pick span{
+    display:inline-flex;align-items:center;gap:8px;padding:8px 18px;
+    border:1px solid var(--gold);border-radius:2px;background:rgba(212,175,55,.07);
+    color:var(--gold);font-size:.9rem;
+  }
+  .steps{display:flex;justify-content:center;gap:clamp(14px,3vw,34px);flex-wrap:wrap;margin-top:54px}
+  .step{text-align:center;max-width:150px}
+  .step .n{font-family:"Cormorant Garamond",serif;font-size:1.7rem;color:var(--gold);font-style:italic}
+  .step .t{font-size:.85rem;color:var(--ink-dim);margin-top:4px}
+
+  footer{position:relative;z-index:2;max-width:var(--maxw);margin:0 auto;padding:40px clamp(22px,6vw,64px) 60px;border-top:1px solid var(--line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;font-family:"JetBrains Mono",monospace;font-size:.66rem;letter-spacing:.14em;color:var(--ink-dim)}
+
+  @media(max-width:820px){
+    .form{grid-template-columns:1fr}
+    .chap{grid-template-columns:1fr;gap:44px}
+    .chap .viz{min-height:320px;order:-1}
+    .hero .sub{max-width:100%}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    .rv{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" aria-hidden="true"><canvas id="sky"></canvas></div>
+
+<!-- 목성 실사 배경: Cassini true-color mosaic, PIA04866 (NASA/JPL/Space Science Institute, 퍼블릭 도메인) -->
+<div class="jupiter-bg" aria-hidden="true"><img src="jupiter.jpg" alt="" decoding="async" fetchpriority="low"></div>
+
+<div class="brandmark"><ruby>歲命<rt>세명</rt></ruby><small>JUPITER · STELLAR DESTINY</small></div>
+
+<div class="langs" role="group" aria-label="Language / 언어">
+  <button type="button" data-l="ko" aria-current="true" onclick="applyLang('ko')">한국어</button><span>·</span>
+  <button type="button" data-l="en" aria-current="false" onclick="applyLang('en')">EN</button><span>·</span>
+  <button type="button" data-l="ja" aria-current="false" onclick="applyLang('ja')">日本語</button>
+</div>
+
+<div class="wrap">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="kicker rv in">四柱 × 天文 · 사주와 천문의 융합 · 목성의 관법</div>
+    <h1 class="rv in d1">달이, 바다를 <span class="accent">움직입니다.</span></h1>
+    <p class="sub rv in d2"><b>밀물과 썰물 — 하루 두 번, 어김없는 리듬.</b><br>38만 킬로미터 밖 달의 인력이 만드는, 과학이 확인한 사실입니다.</p>
+    <p class="ask rv in d2"><span>그렇다면 —</span>태양계의 행성들이 새기는 리듬은, 알고 계십니까?</p>
+    <div class="hero-cta rv in d3">
+      <a class="btn-ghost" href="#book" style="margin-left:0">무료 진단 받기 <span class="arw">→</span></a>
+      <div class="scrollcue"><span class="bar"></span>아래로 · 논리를 따라가 보십시오</div>
+    </div>
+  </section>
+
+  <hr class="div">
+
+  <!-- ============ 章1 · 조석 ============ -->
+  <section class="chap">
+    <div class="content">
+      <div class="chap-num rv"><ruby>觀測<rt>관측</rt></ruby> 01 — <ruby>潮汐<rt>조석</rt></ruby> · 밀물과 썰물</div>
+      <h2 class="rv d1">누구도 밀물을 <em>우연</em>이라 부르지 않습니다.</h2>
+      <p class="rv d2 dim">달의 인력이 지구의 바다를 끌어당겨 부풀립니다. 달이 보이지 않는 날에도 밀물은 옵니다. <b class="dim" style="color:var(--ink)">보이지 않아도 에너지는 작용합니다</b> — 이것이 이 페이지의 유일한 전제입니다.</p>
+      <div class="fact rv d3">조석을 일으키는 힘 — <b>달이 약 2, 태양이 1</b>입니다.<br>그리고 성인 몸의 <b>약 60%는 물</b>입니다.</div>
+    </div>
+    <div class="viz">
+      <svg class="earth-sys rv d1" viewBox="0 0 400 400" role="img" aria-label="달의 중력이 지구 바다를 양쪽으로 부풀리는 조석 팽대">
+        <defs>
+          <radialGradient id="ge" cx="42%" cy="40%" r="65%">
+            <stop offset="0%" stop-color="#3a6d97"/><stop offset="60%" stop-color="#20486b"/><stop offset="100%" stop-color="#122c44"/>
+          </radialGradient>
+          <radialGradient id="gtide" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="rgba(58,109,151,.55)"/><stop offset="100%" stop-color="rgba(58,109,151,0)"/>
+          </radialGradient>
+          <radialGradient id="gm" cx="38%" cy="38%" r="70%">
+            <stop offset="0%" stop-color="#d8d2c4"/><stop offset="100%" stop-color="#7d7768"/>
+          </radialGradient>
+        </defs>
+        <!-- tidal bulge ellipse (horizontal stretch toward moon) -->
+        <ellipse cx="200" cy="200" rx="128" ry="96" fill="url(#gtide)">
+          <animate attributeName="rx" values="128;134;128" dur="6s" repeatCount="indefinite"/>
+        </ellipse>
+        <!-- earth -->
+        <circle cx="200" cy="200" r="82" fill="url(#ge)" stroke="rgba(212,175,55,.18)" stroke-width="1"/>
+        <!-- orbit path of moon -->
+        <circle cx="200" cy="200" r="150" fill="none" stroke="rgba(212,175,55,.14)" stroke-width="1" stroke-dasharray="2 6"/>
+        <!-- moon -->
+        <g>
+          <circle cx="350" cy="200" r="17" fill="url(#gm)"/>
+          <animateTransform attributeName="transform" type="rotate" from="0 200 200" to="360 200 200" dur="26s" repeatCount="indefinite"/>
+        </g>
+        <!-- pull vector -->
+        <line x1="282" y1="200" x2="326" y2="200" stroke="var(--gold)" stroke-width="1.4" opacity=".7"/>
+        <polygon points="326,200 318,196 318,204" fill="var(--gold)" opacity=".7"/>
+        <text x="200" y="330" text-anchor="middle" font-family="JetBrains Mono" font-size="10" letter-spacing="2" fill="#9a95a8">GRAVITY · 引力</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============ 章2 · 아홉 개의 시계 → 오행 = 오성 ============ -->
+  <section class="chap">
+    <div class="viz">
+      <svg class="clockviz rv d1" viewBox="0 0 480 508" role="img" aria-label="태양을 중심으로 아홉 천체가 서로 다른 주기로 공전하고, 맨눈에 보이는 다섯 행성이 오행 木火土金水의 이름을 받은 그림">
+        <defs>
+          <radialGradient id="gsun3" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#fff0c0"/><stop offset="55%" stop-color="#e0a020"/><stop offset="100%" stop-color="rgba(224,160,32,0)"/>
+          </radialGradient>
+        </defs>
+        <g transform="translate(240,242)">
+          <!-- orbit rings: 오행 다섯 행성은 금빛, 지구·외행성은 어둡게 -->
+          <circle r="40"  fill="none" stroke="rgba(212,175,55,.26)" stroke-width="1"/>
+          <circle r="64"  fill="none" stroke="rgba(212,175,55,.26)" stroke-width="1"/>
+          <circle r="88"  fill="none" stroke="rgba(154,149,168,.18)" stroke-width="1"/>
+          <circle r="114" fill="none" stroke="rgba(212,175,55,.26)" stroke-width="1"/>
+          <circle r="142" fill="none" stroke="rgba(212,175,55,.26)" stroke-width="1"/>
+          <circle r="172" fill="none" stroke="rgba(212,175,55,.26)" stroke-width="1"/>
+          <circle r="196" fill="none" stroke="rgba(154,149,168,.14)" stroke-width="1"/>
+          <circle r="214" fill="none" stroke="rgba(154,149,168,.14)" stroke-width="1"/>
+          <circle r="228" fill="none" stroke="rgba(154,149,168,.14)" stroke-width="1" stroke-dasharray="2 5"/>
+          <!-- sun -->
+          <circle r="20" fill="url(#gsun3)"/>
+          <text y="5" text-anchor="middle" font-family="Noto Serif KR" font-size="12" fill="#5e3a1f">日</text>
+          <!-- planets: 각자 다른 주기로 공전 (안쪽일수록 빠르게) -->
+          <g><animateTransform attributeName="transform" type="rotate" from="-30" to="330" dur="6s" repeatCount="indefinite"/><circle cx="40" cy="0" r="3.2" fill="#9a95a8"/></g>
+          <g><animateTransform attributeName="transform" type="rotate" from="70" to="430" dur="10s" repeatCount="indefinite"/><circle cx="64" cy="0" r="4.6" fill="#e8dcc0"/></g>
+          <g><animateTransform attributeName="transform" type="rotate" from="200" to="560" dur="16s" repeatCount="indefinite"/><circle cx="88" cy="0" r="4.4" fill="#3a6d97"/></g>
+          <g><animateTransform attributeName="transform" type="rotate" from="-80" to="280" dur="30s" repeatCount="indefinite"/><circle cx="114" cy="0" r="3.8" fill="#c56a3a"/></g>
+          <g><animateTransform attributeName="transform" type="rotate" from="20" to="380" dur="64s" repeatCount="indefinite"/><circle cx="142" cy="0" r="9" fill="#d99b5c"/></g>
+          <g><animateTransform attributeName="transform" type="rotate" from="150" to="510" dur="150s" repeatCount="indefinite"/><circle cx="172" cy="0" r="6.5" fill="#c9a86a"/><ellipse cx="172" cy="0" rx="12" ry="4.5" fill="none" stroke="#c9a86a" stroke-width="1" opacity=".55"/></g>
+          <g><animateTransform attributeName="transform" type="rotate" from="60" to="420" dur="240s" repeatCount="indefinite"/><circle cx="196" cy="0" r="4.6" fill="#6f93a8" opacity=".7"/></g>
+          <g><animateTransform attributeName="transform" type="rotate" from="-120" to="240" dur="320s" repeatCount="indefinite"/><circle cx="214" cy="0" r="4.4" fill="#46628f" opacity=".7"/></g>
+          <g><animateTransform attributeName="transform" type="rotate" from="100" to="460" dur="400s" repeatCount="indefinite"/><circle cx="228" cy="0" r="2" fill="#6a6580" opacity=".8"/></g>
+          <!-- 오행 이름표: 좌상 대각선 축, 해당 궤도 위 -->
+          <text class="el" x="-36" y="-31" text-anchor="middle">水</text>
+          <text class="el" x="-53" y="-48" text-anchor="middle">金</text>
+          <text class="el" x="-70" y="-65" text-anchor="middle" font-size="11" fill="#3a6d97" opacity=".9">地</text>
+          <text class="el" x="-88" y="-83" text-anchor="middle">火</text>
+          <text class="el" x="-108" y="-103" text-anchor="middle">木</text>
+          <text class="el" x="-129" y="-124" text-anchor="middle">土</text>
+        </g>
+        <text class="cap" x="240" y="500" text-anchor="middle">SOLAR CLOCKWORK · 五星 ↔ 五行</text>
+      </svg>
+    </div>
+    <div class="content">
+      <div class="chap-num rv"><ruby>觀測<rt>관측</rt></ruby> 02 — <ruby>五星<rt>오성</rt></ruby> · 하늘의 시계들</div>
+      <h2 class="rv d1">하늘에는 <em>아홉 개의 에너지</em>가 함께 돌고 있습니다.</h2>
+      <p class="rv d2 dim">달만이 아닙니다. 수성의 88일부터 명왕성의 248년까지 — <b class="dim" style="color:var(--ink)">아홉 천체가 서로 다른 주기로</b> 태양을 돕니다. 하늘은 하나의 거대한 시계입니다.</p>
+      <p class="rv d2 dim">옛 동아시아의 천문가들은 맨눈에 보이는 다섯 행성을 오행(五行)에 배속했습니다(『회남자·천문훈』). <b class="dim" style="color:var(--ink)">사주의 언어와 하늘의 다섯 행성이 같은 이름을 쓰는 까닭입니다.</b></p>
+      <p class="ask-sm rv d3">믿기지 않는다면 — 당신은 이미 매주 그 이름을 부릅니다. <span class="hanja"><ruby>月·火·水·木·金·土<rt>월 · 화 · 수 · 목 · 금 · 토</rt></ruby>.</span></p>
+      <div class="fact rv d3"><b>木</b> 목성 11.9년 · <b>火</b> 화성 1.9년 · <b>土</b> 토성 29.5년 · <b>金</b> 금성 225일 · <b>水</b> 수성 88일<br>당신의 여덟 글자는 모두, 이 다섯 이름의 언어로 적혀 있습니다.</div>
+    </div>
+  </section>
+
+  <hr class="div">
+
+  <!-- ============ 章3 · 목성 균형추 ============ -->
+  <section class="chap flip">
+    <div class="viz">
+      <svg class="scaleviz rv d1" viewBox="0 0 440 300" role="img" aria-label="목성과 지구의 크기 비교 및 태양-목성 공통질량중심">
+        <defs>
+          <radialGradient id="gj" cx="38%" cy="40%" r="72%">
+            <stop offset="0%" stop-color="#e6c088"/><stop offset="45%" stop-color="#b5763f"/><stop offset="100%" stop-color="#5e3a1f"/>
+          </radialGradient>
+          <radialGradient id="gsun" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ffe9a8"/><stop offset="70%" stop-color="#e0a020"/><stop offset="100%" stop-color="rgba(224,160,32,0)"/>
+          </radialGradient>
+        </defs>
+        <!-- jupiter -->
+        <circle cx="132" cy="150" r="108" fill="url(#gj)"/>
+        <!-- bands -->
+        <g opacity=".35" stroke="#3f2712" stroke-width="0" fill="#8a5228">
+          <ellipse cx="132" cy="120" rx="104" ry="9"/><ellipse cx="132" cy="152" rx="107" ry="11"/><ellipse cx="132" cy="184" rx="99" ry="8"/>
+        </g>
+        <!-- great red spot -->
+        <ellipse cx="92" cy="176" rx="17" ry="11" fill="#c56a3a" opacity=".8"/>
+        <!-- earth for scale -->
+        <circle cx="330" cy="222" r="10" fill="#2f6b96"/>
+        <text x="330" y="252" text-anchor="middle" class="lbl">EARTH · 지구</text>
+        <line x1="330" y1="208" x2="330" y2="60" stroke="rgba(255,255,255,.14)" stroke-dasharray="2 4"/>
+        <text x="345" y="150" class="lbl">지름 <tspan class="lbl-gold">×11</tspan></text>
+        <!-- barycenter marker -->
+        <circle cx="132" cy="150" r="2.4" fill="#fff"/>
+        <text x="132" y="150" dx="6" dy="-6" class="lbl-gold" font-family="JetBrains Mono" font-size="9">歲星</text>
+      </svg>
+    </div>
+    <div class="content">
+      <div class="chap-num rv"><ruby>觀測<rt>관측</rt></ruby> 03 — <ruby>木星<rt>목성</rt></ruby> · 균형추</div>
+      <p class="ask-sm rv d1">그 아홉 에너지 가운데, 가장 무거운 것은 무엇입니까. 달 하나가 바다 전체를 움직였다면 —</p>
+      <h2 class="rv d1">태양계에서 <em>태양 다음으로</em> 무거운 것.</h2>
+      <p class="rv d2 dim">목성은 나머지 일곱 행성을 모두 합한 것보다 2.5배 무겁습니다. 1994년, 슈메이커-레비 9 혜성이 그 중력에 붙들려 스물한 조각으로 부서지는 장면을 인류가 지켜봤습니다.</p>
+      <p class="rv d2 dim">그 질량은 태양마저 흔듭니다 — 태양과 목성의 공통 질량중심은 태양 표면 <b class="dim" style="color:var(--ink)">바깥</b>에 있습니다.</p>
+      <div class="fact rv d3">목성 질량 = 태양 제외 태양계의 <b>약 70%</b><br>지름 = 지구의 <b>약 11배</b> · 부피 <b>1,300배</b></div>
+    </div>
+  </section>
+
+  <hr class="div">
+
+  <!-- ============ SIGNATURE · 12년 궤도 → 십이지 ============ -->
+  <section class="sig">
+    <div class="eyebrow rv"><span><ruby>觀測<rt>관측</rt></ruby> 04 — <ruby>歲星紀年<rt>세성기년</rt></ruby> · 목성이 새긴 달력</span></div>
+    <h2 class="rv d1">목성이 하늘을 한 바퀴 도는 데 <em>약 12년.</em></h2>
+    <p class="lead dim rv d2">고대의 천문가들은 이 궤도를 열두 칸으로 나눴고 — 해마다 바뀌는 당신의 <b style="color:var(--ink)">‘띠’</b>가 여기서 옵니다. 서양 역시 같은 하늘을 열두 칸(<ruby>十二宮<rt>십이궁</rt></ruby>)으로 나눴습니다. <b style="color:var(--ink)">동과 서가 같은 구조에 도달한 것</b>입니다.</p>
+
+    <div class="orbit-stage rv d2">
+      <svg id="orbit" viewBox="0 0 560 560" role="img" aria-label="목성이 12년 주기로 황도를 돌며 각 구간이 십이지로 대응되는 그림">
+        <defs>
+          <radialGradient id="gj2" cx="38%" cy="40%" r="72%">
+            <stop offset="0%" stop-color="#e6c088"/><stop offset="50%" stop-color="#b5763f"/><stop offset="100%" stop-color="#5e3a1f"/>
+          </radialGradient>
+          <radialGradient id="gsun2" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#fff0c0"/><stop offset="55%" stop-color="#e0a020"/><stop offset="100%" stop-color="rgba(224,160,32,.05)"/>
+          </radialGradient>
+        </defs>
+        <!-- orbit ring -->
+        <circle cx="280" cy="280" r="210" fill="none" stroke="rgba(212,175,55,.28)" stroke-width="1"/>
+        <circle cx="280" cy="280" r="210" fill="none" stroke="rgba(212,175,55,.08)" stroke-width="26"/>
+        <!-- sun -->
+        <circle cx="280" cy="280" r="34" fill="url(#gsun2)"/>
+        <text x="280" y="285" text-anchor="middle" font-family="Noto Serif KR" font-size="17" fill="#5e3a1f">日</text>
+        <!-- 12 tick group generated by JS -->
+        <g id="ticks"></g>
+        <!-- jupiter marker (moves) -->
+        <g id="jup">
+          <circle cx="0" cy="0" r="15" fill="url(#gj2)"/>
+          <circle cx="-4" cy="-4" r="4" fill="rgba(255,255,255,.25)"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="orbit-cap rv d3">
+      <div>
+        <div class="k"><ruby>天文<rt>천문</rt></ruby> · 사실</div>
+        <div class="v">목성 공전주기 <b>11.86년</b> — 그 위치로 해의 이름을 삼은 것이 <b><ruby>歲星紀年<rt>세성기년</rt></ruby></b>(『사기·천관서』)입니다.</div>
+      </div>
+      <div>
+        <div class="k"><ruby>命理<rt>명리</rt></ruby> · 번역</div>
+        <div class="v"><b>사주의 시간 좌표계</b>(십이지→육십갑자)가 이 열두 칸 위에 서 있습니다.</div>
+      </div>
+      <div>
+        <div class="k"><ruby>歲運<rt>세운</rt></ruby> · 메시지</div>
+        <div class="v">목성이 지금 어느 칸을 지나는가 — <b>그 해의 운(歲運)을 읽는 첫 좌표</b>입니다.</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="div">
+
+  <!-- ============ 章5 · 번역표: 오행↔4원소·3모드, 십이지↔십이궁 ============ -->
+  <section class="pairs">
+    <div class="eyebrow rv"><span><ruby>觀測<rt>관측</rt></ruby> 05 — <ruby>翻譯<rt>번역</rt></ruby> · 두 언어, 한 하늘</span></div>
+    <h2 class="rv d1">두 체계는, 서로의 <em>번역본</em>입니다.</h2>
+    <p class="sub rv d1">같은 하늘을 나눈 두 문법은, 놀랍도록 평행합니다.</p>
+
+    <div class="xrow rv d2">
+      <div class="cell">
+        <div class="k"><ruby>命理<rt>명리</rt></ruby> · <ruby>五行<rt>오행</rt></ruby></div>
+        <div class="t hanja"><ruby>木<rt>목</rt></ruby> · <ruby>火<rt>화</rt></ruby> · <ruby>土<rt>토</rt></ruby> · <ruby>金<rt>금</rt></ruby> · <ruby>水<rt>수</rt></ruby></div>
+        <div class="s">다섯 기운의 순환 — 상생(生)과 상극(剋)으로 기질을 읽습니다.</div>
+      </div>
+      <div class="mid">↔</div>
+      <div class="cell">
+        <div class="k"><ruby>天文<rt>천문</rt></ruby> · <ruby>四元素<rt>사원소</rt></ruby> × <ruby>三態<rt>삼태</rt></ruby></div>
+        <div class="t">불 · 흙 · 바람 · 물 × 활동 · 고정 · 변통</div>
+        <div class="s">4원소 × 3모드 = 열두 기질의 격자 — 같은 질문에 대한 서양의 답안.</div>
+      </div>
+    </div>
+
+    <div class="xrow rv d2">
+      <div class="cell">
+        <div class="k"><ruby>命理<rt>명리</rt></ruby> · <ruby>四柱八字<rt>사주팔자</rt></ruby></div>
+        <div class="t">연 · 월 · 일 · 시, 여덟 글자</div>
+        <div class="s">태어난 순간의 하늘을 간지(干支)로 기록한 것.</div>
+      </div>
+      <div class="mid">↔</div>
+      <div class="cell">
+        <div class="k"><ruby>天文<rt>천문</rt></ruby> · Natal Chart</div>
+        <div class="t">네이탈 차트 — 출생의 하늘 지도</div>
+        <div class="s">같은 순간의 하늘을 행성 좌표로 기록한 것.</div>
+      </div>
+    </div>
+
+    <div class="xrow rv d3">
+      <div class="cell">
+        <div class="k"><ruby>命理<rt>명리</rt></ruby> · <ruby>大運<rt>대운</rt></ruby> · <ruby>歲運<rt>세운</rt></ruby></div>
+        <div class="t">대운 10년 · 세운 1년</div>
+        <div class="s">대운은 태어난 사주에서 정해진 차례로 풀려나오는 10년의 흐름 — 세운은 그 해의 간지를 원국에 겹쳐 읽습니다.</div>
+      </div>
+      <div class="mid">↔</div>
+      <div class="cell">
+        <div class="k"><ruby>天文<rt>천문</rt></ruby> · Time-lord · Transit</div>
+        <div class="t">시간 주인 기법 · 트랜짓</div>
+        <div class="s">긴 주기는 행성들이 차례로 시대를 맡는 시간 주인(Time-lord) 기법으로 — 한 해와 지금은 행성의 현재 위치(트랜짓)를 차트에 겹쳐 읽습니다.</div>
+      </div>
+    </div>
+
+    <p class="xnote rv d3">이것은 등식(=)이 아니라 <b>상응(↔)</b>입니다. 문법은 다르나 묻는 것은 같습니다 — <b>「이 사람은 어떤 기운으로 태어나, 지금 어느 리듬을 지나는가.」</b></p>
+    <p class="xnote rv d3" style="margin-top:18px">이 번역에는 선례가 있습니다. 헬레니즘의 7일 주기가 8세기 『숙요경(宿曜經)』을 타고 동아시아에 닿아 해·달과 오행의 이름을 얻었습니다. <b><ruby>月·火·水·木·金·土·日<rt>월 · 화 · 수 · 목 · 금 · 토 · 일</rt></ruby> — 당신의 요일이 1,300년 된 동서 번역본입니다.</b></p>
+  </section>
+
+  <hr class="div">
+
+  <!-- ============ 章6 · 상응의 논리 (지적 정직) ============ -->
+  <section class="creed">
+    <div class="eyebrow rv"><span><ruby>觀法<rt>관법</rt></ruby> 06 — <ruby>相應<rt>상응</rt></ruby> · 인과가 아니라 상응</span></div>
+    <h2 class="rv d1">우리는 목성이 당신을<br><em>조종한다</em> 말하지 않습니다.</h2>
+    <p class="body rv d2">달이 밀물을 만들듯, 우주에는 <b>주기(週期)</b>가 있습니다. 인류는 수천 년간 이 리듬을 삶의 <b>좌표계</b>로 삼았습니다 — 동양은 <ruby>干支<rt>간지</rt></ruby>로, 서양은 <ruby>行星<rt>행성</rt></ruby>으로. <ruby>歲命<rt>세명</rt></ruby>은 그 둘을 하나의 하늘 아래 되돌려 놓습니다.</p>
+    <p class="body rv d2">지도를 읽는 이유는 길을 <b>스스로 고르기 위해서</b>입니다. <b>파도를 아는 사람이, 파도를 탑니다.</b></p>
+
+    <div class="honest rv d3">
+      <div class="t">우리가 지키는 정직</div>
+      <p><ruby>歲命<rt>세명</rt></ruby>은 결정론을 팔지 않습니다. 천문 계산은 <b>코드로 정밀하게</b>, 해석은 <b>상응(correspondence)의 언어로</b>. 별은 성향과 시기의 지도를 그릴 뿐, <b>선택은 언제나 당신의 것</b>입니다.</p>
+      <p style="margin-top:12px;font-size:.85rem">이 페이지의 천문 수치는 NASA·표준 천문학 문헌의 공표값을, 역사 서술은 『사기(史記)·천관서』 『회남자(淮南子)·천문훈』 등 사료를 따릅니다.</p>
+    </div>
+
+    <div class="seal rv d3 hanja"><ruby>知未來<rt>지미래</rt></ruby> <ruby>命由己<rt>명유기</rt></ruby></div>
+    <div class="seal-sub rv d3">미래를 알되, 운명은 스스로 짓는다</div>
+  </section>
+
+  <!-- ============ BOOKING ============ -->
+  <section class="book" id="book">
+    <div class="eyebrow rv">무료 진단 · 첫 문장</div>
+    <h2 class="rv d1">당신의 하늘에는, 지금 어떤 리듬이 흐르고 있습니까.</h2>
+    <p class="sub rv d1">생년월일시 하나로, 동서양이 같은 결론에 이르는 <b style="color:var(--ink)">한 문장</b>을 무료로 보내드립니다.</p>
+    <div class="tier-pick" id="tierPick" hidden><span>선택하신 걸음 — <b id="tierPickName"></b></span></div>
+    <!-- method="post": JS 실패 시 네이티브 제출이 일어나도 개인정보가 URL(GET 쿼리)로 새지 않게 하는 안전망 -->
+    <form class="form rv d2" id="bookForm" method="post" action="#" onsubmit="return submitBooking(event)">
+      <div class="fg"><label for="f-name">이름</label><input id="f-name" name="name" required autocomplete="name" maxlength="30" placeholder="홍길동"></div>
+      <div class="fg"><label for="f-gender">성별</label><select id="f-gender" name="gender" required><option value="">선택</option><option value="M">남</option><option value="F">여</option></select></div>
+      <div class="fg"><label for="f-date">생년월일 (양력)</label><input id="f-date" name="birth_date" type="date" required autocomplete="bday"></div>
+      <div class="fg"><label for="f-time">출생 시각</label><input id="f-time" name="birth_time" type="time" required></div>
+      <div class="fg"><label for="f-place">출생지</label><input id="f-place" name="birth_place" required maxlength="40" placeholder="부산"></div>
+      <div class="fg"><label for="f-region">거주지역</label><input id="f-region" name="residence" required maxlength="40" placeholder="부산 영도구"></div>
+      <div class="fg full"><label for="f-phone">연락처 (카카오톡 수신)</label><input id="f-phone" name="phone" type="tel" required autocomplete="tel" inputmode="tel" pattern="01[0-9]-?[0-9]{3,4}-?[0-9]{4}" maxlength="13" title="010-0000-0000 형식으로 입력해 주세요" placeholder="010-0000-0000"></div>
+      <input type="hidden" id="f-tier" name="tier" value="free">
+      <div class="consent">
+        <label>
+          <input type="checkbox" id="f-consent" name="consent" value="agree" required>
+          <span><b>개인정보 수집·이용에 동의합니다.</b> (필수) <button type="button" class="more" onclick="const d=document.getElementById('consentDetail');d.hidden=!d.hidden">내용 보기</button></span>
+        </label>
+        <div class="detail" id="consentDetail" hidden>
+          · 수집 항목: 이름, 성별, 생년월일시, 출생지, 거주지역, 연락처(카카오톡)<br>
+          · 이용 목적: 운명 분석 리포트 작성·발송 및 서비스 안내<br>
+          · 보유 기간: 서비스 제공 완료 후 1년, 파기 요청 시 즉시 파기<br>
+          · 동의를 거부하실 수 있으나, 거부 시 분석 서비스 이용이 불가합니다.
+        </div>
+      </div>
+      <button class="btn" type="submit">무료 진단 신청 <span class="arw">→</span></button>
+      <div class="fmsg" id="fmsg" role="status" aria-live="polite"></div>
+    </form>
+    <div class="steps rv d3">
+      <div class="step"><div class="n">i</div><div class="t">신청 접수</div></div>
+      <div class="step"><div class="n">ii</div><div class="t">무료 한 문장 수신</div></div>
+      <div class="step"><div class="n">iii</div><div class="t">등급 선택·결제</div></div>
+      <div class="step"><div class="n">iv</div><div class="t">리포트 수령</div></div>
+    </div>
+  </section>
+
+  <hr class="div">
+
+  <!-- ============ PRICING · 가입의 세 걸음 (맨 마지막 배치) ============ -->
+  <section class="pricing" id="pricing">
+    <div class="eyebrow rv"><span><ruby>歲命<rt>세명</rt></ruby> · 가입의 세 걸음</span></div>
+    <h2 class="rv d1">무료로 시작해, <em>리듬</em>까지.</h2>
+    <p class="sub rv d1">첫 문장은 무료입니다. 깊이가 필요하면 한 번, 흐름이 궁금하면 계속 — 걸음은 당신이 정합니다.</p>
+    <div class="tiers">
+      <div class="tier rv d2">
+        <div class="tname">1 · 무료가입</div>
+        <div class="tprice">0<small>원 · 첫 문장</small></div>
+        <div class="tdesc">동서양이 같은 결론에 이르는 한 문장 — 생년월일시 하나로</div>
+        <ul>
+          <li>동서 교차 진단 한 문장</li>
+          <li>카카오톡으로 수신</li>
+          <li>결제 정보 없이 신청</li>
+        </ul>
+        <button class="btn-ghost" type="button" onclick="startBooking('free')">무료로 시작</button>
+      </div>
+      <div class="tier rv d2">
+        <div class="tname">2 · 유료가입 — STELLAR</div>
+        <div class="tprice">30,000<small>원 · 1회</small></div>
+        <div class="tdesc">당신이 누구인지 — 동서 통합 원국 진단 리포트</div>
+        <ul>
+          <li>사주 원국 정밀 분석 (격국·용신·대운)</li>
+          <li>서양 네이탈 차트 분석 (행성·하우스·아스펙트)</li>
+          <li>동서 교차 발산점 입체 통찰</li>
+          <li>용어 없는 산문 리포트 (15섹션, 문서 제공)</li>
+        </ul>
+        <button class="btn-ghost" type="button" onclick="startBooking('stellar')">스텔라 신청</button>
+      </div>
+      <div class="tier hot rv d3">
+        <div class="badge">매일 10명 한정</div>
+        <div class="tname">3 · 프리미엄가입 — DESTINY</div>
+        <div class="tprice">50,000<small>원 · 월 5크레딧</small></div>
+        <div class="tdesc">당신의 시간이 어디로 흐르는지 — 리듬 동행 멤버십</div>
+        <ul>
+          <li>스텔라 전체 포함</li>
+          <li>매일 아침, 오늘의 운세 제공</li>
+          <li>1:1 상담 월 2회</li>
+          <li>월간 운 흐름 리포트 (세운·트랜짓)</li>
+          <li>크레딧 자유 사용 — 일진·궁합·택일·신수까지 전 영역</li>
+          <li>잔여 크레딧 이월 · 언제든 해지</li>
+          <li class="mut">프리미엄 가입은 매일 10명 한정</li>
+        </ul>
+        <button class="btn" type="button" onclick="startBooking('destiny')">프리미엄 시작 <span class="arw">→</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA (share) ============ -->
+  <section class="cta">
+    <button class="btn-ghost rv" type="button" onclick="shareKakao()" style="margin-left:0">
+      <svg class="kico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3C6.5 3 2 6.6 2 11c0 2.8 1.9 5.3 4.7 6.7-.2.7-.7 2.6-.8 3-.1.5.2.5.4.4.2-.1 2.6-1.8 3.7-2.5.6.1 1.3.1 2 .1 5.5 0 10-3.6 10-8S17.5 3 12 3z"/></svg>
+      <span class="ktxt">카카오톡으로 공유</span>
+    </button>
+    <div class="note rv d1">프리미엄 매일 10명 한정 · 歲命 JUPITER · 知未來 命由己</div>
+  </section>
+
+</div>
+
+<footer>
+  <div>歲命 JUPITER — HARNESS Corp, Busan</div>
+  <div>Jupiter image: NASA / JPL / Space Science Institute (Cassini)</div>
+  <div>知未來 命由己</div>
+</footer>
+
+<script>
+/* ---------- starfield ---------- */
+/* try/catch 격리: 이 블록이 죽어도 아래 reveal이 반드시 실행되어야 함(.rv opacity:0 탈출) */
+(function(){try{
+  const c=document.getElementById('sky'),x=c.getContext('2d');
+  if(!x) return; // 캔버스 차단 환경(프라이버시 확장 등)
+  let w,h,stars;
+  function size(){w=c.width=innerWidth;h=c.height=innerHeight;}
+  function make(){
+    const n=Math.min(160,Math.floor(w*h/9000));
+    stars=Array.from({length:n},()=>({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.3+.2,a:Math.random(),s:Math.random()*.02+.004}));
+  }
+  function draw(tw){
+    x.clearRect(0,0,w,h);
+    for(const st of stars){
+      const a=tw?(.4+Math.abs(Math.sin(st.a))*.6)*.7:.35;
+      x.beginPath();x.arc(st.x,st.y,st.r,0,6.28);
+      x.fillStyle='rgba(212,190,130,'+a+')';x.fill();
+    }
+  }
+  const rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  size();make();
+  // 모바일 주소창 접힘은 높이만 바뀜 → 별 재배치 없이 유지 (스크롤마다 별이 점프하는 문제 방지)
+  addEventListener('resize',()=>{const pw=w;size();if(w!==pw)make();if(rm)draw(false);});
+  if(rm){draw(false);}
+  else (function loop(){for(const st of stars)st.a+=st.s;draw(true);requestAnimationFrame(loop);})();
+}catch(e){}})();
+
+/* ---------- reveal on scroll ---------- */
+(function(){try{
+  if(!('IntersectionObserver' in window)){
+    document.querySelectorAll('.rv').forEach(el=>el.classList.add('in'));return;
+  }
+  const io=new IntersectionObserver((es)=>{
+    es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+  },{threshold:.18,rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('.rv:not(.in)').forEach(el=>io.observe(el));
+  // SVG SMIL 애니메이션은 CSS(prefers-reduced-motion)로 멈추지 않음 → 직접 정지
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches){
+    document.querySelectorAll('svg').forEach(s=>{try{s.pauseAnimations()}catch(e){}});
+  }
+}catch(e){
+  document.querySelectorAll('.rv').forEach(el=>el.classList.add('in'));
+}})();
+
+/* ---------- 12-year orbit: ticks + jupiter motion ---------- */
+(function(){try{
+  const branches=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+  const cx=280,cy=280,R=210;
+  const g=document.getElementById('ticks');
+  const ns='http://www.w3.org/2000/svg';
+  branches.forEach((b,i)=>{
+    const ang=(-90+i*30)*Math.PI/180;
+    const tx=cx+Math.cos(ang)*R, ty=cy+Math.sin(ang)*R;
+    // tick node
+    const dot=document.createElementNS(ns,'circle');
+    dot.setAttribute('cx',tx);dot.setAttribute('cy',ty);dot.setAttribute('r',3);
+    dot.setAttribute('fill','#d4af37');dot.setAttribute('opacity','.55');
+    g.appendChild(dot);
+    // branch glyph, pushed outward
+    const lx=cx+Math.cos(ang)*(R+30), ly=cy+Math.sin(ang)*(R+30);
+    const t=document.createElementNS(ns,'text');
+    t.setAttribute('x',lx);t.setAttribute('y',ly+6);t.setAttribute('text-anchor','middle');
+    t.setAttribute('font-family','Noto Serif KR');t.setAttribute('font-size','19');
+    t.setAttribute('fill','#c9a86a');t.setAttribute('opacity','.85');
+    t.textContent=b;
+    t.setAttribute('data-i',i);
+    g.appendChild(t);
+  });
+
+  const jup=document.getElementById('jup');
+  const rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const labels=[...g.querySelectorAll('text')];
+  let t0=null;
+  const period=24000; // 24s = one full 12-branch loop (feels like "12 years")
+  function place(frac){
+    const ang=(-90+frac*360)*Math.PI/180;
+    const jx=cx+Math.cos(ang)*R, jy=cy+Math.sin(ang)*R;
+    jup.setAttribute('transform','translate('+jx+','+jy+')');
+    const cur=Math.floor(((frac%1)+1)%1*12);
+    labels.forEach(l=>{
+      const on=+l.getAttribute('data-i')===cur;
+      l.setAttribute('fill',on?'#ffe9a8':'#c9a86a');
+      l.setAttribute('opacity',on?'1':'.5');
+      l.setAttribute('font-size',on?'24':'19');
+    });
+  }
+  if(rm){place(0);return;}
+  function tick(ts){
+    if(!t0)t0=ts;
+    const frac=((ts-t0)/period)%1;
+    place(frac);
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}catch(e){}})();
+</script>
+
+<!-- 부킹 스크립트를 카카오 SDK보다 먼저 정의:
+     SDK CDN이 느리거나 차단되어도 submitBooking이 항상 존재해야 함
+     (미정의 시 인라인 핸들러가 throw → 네이티브 제출로 개인정보가 새는 경로 차단) -->
+<script>
+  const KAKAO_KEY = 'YOUR_JAVASCRIPT_KEY';   // ← 교체
+  const SITE_URL  = 'https://sangheelee-1.github.io/semyeong';   // GitHub Pages 고정 주소 (자체 도메인 구입 시 교체)
+  const API_BASE  = '';                       // ← stellar_booking 주소. 같은 서버 배포 시 '' 유지, 분리 시 'https://api.도메인'
+
+  // 미래 생년월일 입력 방지 (로컬 시간대 기준)
+  try{
+    const _d = new Date();
+    document.getElementById('f-date').max = new Date(_d.getTime()-_d.getTimezoneOffset()*60000).toISOString().slice(0,10);
+  }catch(e){}
+
+  // SDK가 나중에 로드되므로 초기화는 사용 시점에 (lazy)
+  function kakaoReady(){
+    try{ if(window.Kakao && !Kakao.isInitialized() && KAKAO_KEY!=='YOUR_JAVASCRIPT_KEY') Kakao.init(KAKAO_KEY); }catch(e){}
+    return !!(window.Kakao && Kakao.isInitialized());
+  }
+
+  function shareKakao(){
+    if(!kakaoReady()){
+      // 공유 SDK 미설정/미로드 → 링크 복사 폴백
+      const manual=()=>alert('주소창의 링크를 복사해 카카오톡에 붙여넣어 주십시오. 카드가 표시됩니다.');
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(location.href).then(
+          ()=>alert('링크가 복사되었습니다. 카카오톡에 붙여넣으면 카드가 표시됩니다.'), manual);
+      } else manual();
+      return;
+    }
+    Kakao.Share.sendDefault({
+      objectType:'feed',
+      content:{
+        title:'歲命 · JUPITER — 우주의 리듬을 읽다',
+        description:'사주(四柱)와 천문(天文)의 융합 — 행성들의 주기가 당신의 삶에 리듬을 새깁니다.',
+        imageUrl: SITE_URL + '/og-image.png',
+        link:{ mobileWebUrl:SITE_URL, webUrl:SITE_URL }
+      },
+      buttons:[{ title:'무료 진단 받기', link:{ mobileWebUrl:SITE_URL, webUrl:SITE_URL } }]
+    });
+  }
+
+  /* ===== stellar_booking 연동 =====
+     Flask 백엔드(포트 8090)의 접수 엔드포인트로 POST.
+     엔드포인트 경로가 다르면 ENDPOINT 만 수정. 결제-선행 5단계 상태기계의 [접수] 단계 진입. */
+  const ENDPOINT = API_BASE + '/api/booking';
+
+  /* 등급별 표시: 칩·제출 버튼·완료 메시지가 선택을 따라간다 (숨은 필드만 바뀌는 혼동 방지)
+     문구는 현재 언어(window.LANG)를 따른다 */
+  window.LANG = window.LANG || 'ko';
+  const TIERS = {
+    free:    { name:{ko:'무료 진단 · 첫 문장', en:'Free · Your first sentence', ja:'無料鑑定 · 最初の一文'},
+               btn: {ko:'무료 진단 신청', en:'Request free reading', ja:'無料鑑定を申し込む'} },
+    stellar: { name:{ko:'유료가입 STELLAR · 30,000원 1회', en:'Paid — STELLAR · ₩30,000 one-time', ja:'有料 STELLAR · 30,000ウォン(1回)'},
+               btn: {ko:'스텔라 신청 접수', en:'Order Stellar', ja:'ステラを申し込む'} },
+    destiny: { name:{ko:'프리미엄가입 DESTINY · 월 50,000원', en:'Premium — DESTINY · ₩50,000/mo', ja:'プレミアム DESTINY · 月50,000ウォン'},
+               btn: {ko:'프리미엄 신청 접수', en:'Order Premium', ja:'プレミアムを申し込む'} }
+  };
+  const FMSG = {
+    sending:{ko:'접수 중…', en:'Sending…', ja:'送信中…'},
+    okFree: {ko:'접수되었습니다. 카카오톡으로 무료 진단 한 문장을 보내드리겠습니다.',
+             en:'Received! Your free one-sentence reading will arrive via KakaoTalk.',
+             ja:'受け付けました。無料鑑定の一文をカカオトークでお送りします。'},
+    okPaid: {ko:n=>'접수되었습니다. 무료 진단 한 문장과 함께 '+n+' 안내를 카카오톡으로 보내드리겠습니다.',
+             en:n=>'Received! We’ll send your free sentence along with '+n+' details via KakaoTalk.',
+             ja:n=>'受け付けました。無料の一文と併せて'+n+'のご案内をカカオトークでお送りします。'},
+    err4:   {ko:'입력 내용을 다시 확인해 주십시오. 계속 실패하면 카카오톡 채널로 문의해 주십시오.',
+             en:'Please check your entries. If it keeps failing, reach us on our KakaoTalk channel.',
+             ja:'入力内容をご確認ください。続けて失敗する場合はカカオトークチャンネルへお問い合わせください。'},
+    err5:   {ko:'서버 연결이 원활하지 않습니다. 잠시 후 다시 시도해 주십시오.',
+             en:'The server is not responding. Please try again in a moment.',
+             ja:'サーバー接続が不安定です。しばらくしてから再度お試しください。'}
+  };
+  function applyTierUI(tier){
+    const L = window.LANG || 'ko';
+    const t = TIERS[tier] || TIERS.free;
+    const pick = document.getElementById('tierPick');
+    document.getElementById('tierPickName').textContent = t.name[L] || t.name.ko;
+    pick.hidden = (tier === 'free' || !TIERS[tier]);
+    const btn = document.querySelector('#bookForm button[type="submit"]');
+    btn.firstChild.textContent = (t.btn[L] || t.btn.ko) + ' ';
+  }
+  function startBooking(tier){
+    document.getElementById('f-tier').value = tier;
+    applyTierUI(tier);
+    document.getElementById('book').scrollIntoView({behavior:'smooth'});
+    setTimeout(()=>document.getElementById('f-name').focus(), 600);
+  }
+
+  async function submitBooking(e){
+    e.preventDefault();
+    const f = document.getElementById('bookForm');
+    const btn = f.querySelector('button[type="submit"]');
+    const msg = document.getElementById('fmsg');
+    if(btn.disabled) return false;              // 이중 제출 가드
+    const L = window.LANG || 'ko';
+    const data = Object.fromEntries(new FormData(f).entries());
+    data.lang = L;                              // 백엔드에 응답 언어 힌트
+    btn.disabled = true;
+    msg.className = 'fmsg'; msg.textContent = FMSG.sending[L];
+    try{
+      const r = await fetch(ENDPOINT, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(data),
+        signal: (window.AbortSignal && AbortSignal.timeout) ? AbortSignal.timeout(10000) : undefined
+      });
+      if(!r.ok) throw new Error(r.status);
+      msg.className = 'fmsg ok';
+      msg.textContent = (data.tier === 'free' || !TIERS[data.tier])
+        ? FMSG.okFree[L]
+        : FMSG.okPaid[L]((TIERS[data.tier].name[L] || TIERS[data.tier].name.ko).split(' · ')[0]);
+      f.reset();
+      applyTierUI('free'); // reset이 숨은 tier 필드를 free로 되돌리므로 칩·버튼도 동기화
+    }catch(err){
+      msg.className = 'fmsg err';
+      const s = +err.message;
+      msg.textContent = (s>=400 && s<500) ? FMSG.err4[L] : FMSG.err5[L];
+    }finally{
+      btn.disabled = false;
+    }
+    return false;
+  }
+</script>
+
+<script>
+/* ===== i18n: KO(원본 DOM) / EN / JA =====
+   원리: KO는 DOM 원본을 캐시해 복원, EN/JA는 사전으로 innerHTML 교체.
+   q=선택자, n=몇 번째 매치(기본 0), attr 지정 시 속성 교체. */
+const I18N = [
+  // hero
+  {q:'.kicker', en:"四柱 × 天文 · Four Pillars meets Astrology · The Way of Jupiter", ja:"四柱 × 天文 · 四柱と天文の融合 · 木星の観法"},
+  {q:'.hero h1', en:"The Moon <span class='accent'>moves the sea.</span>", ja:"月が、海を<span class='accent'>動かしています。</span>"},
+  {q:'.hero .sub', en:"<b>Ebb and flow — twice a day, without fail.</b><br>The pull of a moon 380,000 km away. A fact confirmed by science.", ja:"<b>満ち潮と引き潮 — 一日二度、違わぬリズム。</b><br>38万キロ彼方の月の引力が生む、科学が確かめた事実です。"},
+  {q:'.hero .ask', en:"<span>Then —</span>Do you know the rhythms the planets are carving?", ja:"<span>ならば —</span>太陽系の惑星たちが刻むリズムを、ご存じですか。"},
+  {q:'.hero-cta .btn-ghost', en:"Get a free reading <span class='arw'>→</span>", ja:"無料鑑定を受ける <span class='arw'>→</span>"},
+  {q:'.scrollcue', en:"<span class='bar'></span>Scroll · follow the logic", ja:"<span class='bar'></span>下へ · 論理をたどってください"},
+  // 章1-3
+  {q:'.chap-num', n:0, en:"觀測 01 — 潮汐 · The Tides", ja:"觀測 01 — 潮汐 · 満ち引き"},
+  {q:'.chap h2', n:0, en:"No one calls the tide a <em>coincidence</em>.", ja:"満ち潮を<em>偶然</em>と呼ぶ人はいません。"},
+  {q:'.chap p.dim', n:0, en:"The Moon's gravity pulls the ocean into a swell. The tide comes even on nights the Moon is hidden. <b class='dim' style='color:var(--ink)'>Unseen forces still act</b> — that is the single premise of this page.", ja:"月の引力が地球の海を引き寄せ、膨らませます。月の見えない夜にも潮は満ちます。<b class='dim' style='color:var(--ink)'>見えなくても、エネルギーは働いている</b> — それがこのページの唯一の前提です。"},
+  {q:'.fact', n:0, en:"Tidal force — <b>Moon ≈ 2, Sun ≈ 1</b>.<br>And the adult body is <b>about 60% water</b>.", ja:"潮汐を起こす力 — <b>月が約2、太陽が1</b>。<br>そして成人の体の<b>約60%は水</b>です。"},
+  {q:'.chap-num', n:1, en:"觀測 02 — 五星 · Clocks in the Sky", ja:"觀測 02 — 五星 · 空の時計たち"},
+  {q:'.chap h2', n:1, en:"Nine <em>energies</em> are turning overhead, together.", ja:"空には<em>九つのエネルギー</em>が、共に巡っています。"},
+  {q:'.chap p.dim', n:1, en:"Not the Moon alone. From Mercury's 88 days to Pluto's 248 years — <b class='dim' style='color:var(--ink)'>nine bodies circle the Sun, each to its own period</b>. The sky is one vast clock.", ja:"月だけではありません。水星の88日から冥王星の248年まで — <b class='dim' style='color:var(--ink)'>九つの天体がそれぞれの周期で</b>太陽を巡ります。空はひとつの巨大な時計です。"},
+  {q:'.chap p.dim', n:2, en:"Ancient East Asian astronomers assigned the five visible planets to the Five Elements 五行 (<i>Huainanzi</i>, 2nd c. BCE). <b class='dim' style='color:var(--ink)'>That is why the language of Saju and the five planets share the same names.</b>", ja:"古代東アジアの天文家は、肉眼で見える五つの惑星を五行に配しました(『淮南子・天文訓』)。<b class='dim' style='color:var(--ink)'>四柱の言葉と空の五惑星が同じ名を持つ理由です。</b>"},
+  {q:'.ask-sm', n:0, en:"If that sounds unlikely — East Asia already calls these names every week. <span class='hanja'>月·火·水·木·金·土.</span>", ja:"信じがたいなら — あなたはすでに毎週その名を呼んでいます。<span class='hanja'>月・火・水・木・金・土。</span>"},
+  {q:'.fact', n:1, en:"<b>木</b> Jupiter 11.9y · <b>火</b> Mars 1.9y · <b>土</b> Saturn 29.5y · <b>金</b> Venus 225d · <b>水</b> Mercury 88d<br>Your eight characters are written entirely in these five names.", ja:"<b>木</b> 木星11.9年 · <b>火</b> 火星1.9年 · <b>土</b> 土星29.5年 · <b>金</b> 金星225日 · <b>水</b> 水星88日<br>あなたの八字はすべて、この五つの名で書かれています。"},
+  {q:'.chap-num', n:2, en:"觀測 03 — 木星 · The Counterweight", ja:"觀測 03 — 木星 · 釣り合いの錘"},
+  {q:'.ask-sm', n:1, en:"Of those nine energies, which weighs the most? If one moon could move an entire ocean —", ja:"九つのエネルギーのうち、最も重いものは何でしょう。月ひとつが海全体を動かしたのなら —"},
+  {q:'.chap h2', n:2, en:"The heaviest thing in the solar system, <em>after the Sun</em>.", ja:"太陽系で<em>太陽の次に</em>重いもの。"},
+  {q:'.chap p.dim', n:3, en:"Jupiter outweighs the other seven planets combined, 2.5 times over. In 1994, humanity watched comet Shoemaker–Levy 9 caught by its gravity and torn into twenty-one fragments.", ja:"木星は他の七惑星を合わせたより2.5倍重い。1994年、シューメーカー・レヴィ第9彗星がその重力に捕らえられ、二十一の欠片に砕ける様を人類は見届けました。"},
+  {q:'.chap p.dim', n:4, en:"That mass sways even the Sun — the Sun–Jupiter barycenter lies <b class='dim' style='color:var(--ink)'>outside</b> the Sun's surface.", ja:"その質量は太陽さえ揺らします — 太陽と木星の共通重心は、太陽表面の<b class='dim' style='color:var(--ink)'>外側</b>にあります。"},
+  {q:'.fact', n:2, en:"Jupiter's mass = <b>~70%</b> of the solar system, Sun excluded<br>Diameter = <b>~11×</b> Earth · Volume <b>1,300×</b>", ja:"木星の質量 = 太陽を除く太陽系の<b>約70%</b><br>直径 = 地球の<b>約11倍</b> · 体積<b>1,300倍</b>"},
+  {q:'.scaleviz .lbl', n:0, en:"EARTH", ja:"EARTH · 地球"},
+  {q:'.scaleviz .lbl', n:1, en:"Diameter <tspan class='lbl-gold'>×11</tspan>", ja:"直径 <tspan class='lbl-gold'>×11</tspan>"},
+  // 章4 세성기년
+  {q:'.sig .eyebrow span', en:"觀測 04 — 歲星紀年 · The Calendar Jupiter Carved", ja:"觀測 04 — 歲星紀年 · 木星が刻んだ暦"},
+  {q:'.sig h2', en:"One lap of the sky takes Jupiter <em>about 12 years.</em>", ja:"木星が空を一周するのに、<em>およそ12年。</em>"},
+  {q:'.sig .lead', en:"Ancient astronomers divided that orbit into twelve — and <b style='color:var(--ink)'>the zodiac animal of your birth year</b> comes from there. The West divided the same sky into twelve as well. <b style='color:var(--ink)'>East and West arrived at the same structure.</b>", ja:"古代の天文家はこの軌道を十二に分け — 年ごとに変わるあなたの<b style='color:var(--ink)'>「干支」</b>はここから来ています。西洋も同じ空を十二宮に分けました。<b style='color:var(--ink)'>東と西が同じ構造にたどり着いた</b>のです。"},
+  {q:'.orbit-cap .k', n:0, en:"天文 · Fact", ja:"天文 · 事実"},
+  {q:'.orbit-cap .v', n:0, en:"Jupiter's period: <b>11.86 years</b> — naming the years by its position was <b>歲星紀年</b>, the Jupiter-year count (<i>Shiji</i>).", ja:"木星の公転周期<b>11.86年</b> — その位置で年に名を与えたのが<b>歲星紀年</b>(『史記・天官書』)です。"},
+  {q:'.orbit-cap .k', n:1, en:"命理 · Translation", ja:"命理 · 翻訳"},
+  {q:'.orbit-cap .v', n:1, en:"<b>Saju's coordinate system of time</b> (twelve branches → sixty stems) stands on these twelve slots.", ja:"<b>四柱の時間座標系</b>(十二支→六十干支)は、この十二の区画の上に立っています。"},
+  {q:'.orbit-cap .k', n:2, en:"歲運 · The Message", ja:"歲運 · メッセージ"},
+  {q:'.orbit-cap .v', n:2, en:"Which slot is Jupiter crossing now — <b>the first coordinate for reading the year's fortune</b>.", ja:"木星がいまどの区画を通っているか — <b>その年の運(歳運)を読む最初の座標</b>です。"},
+  // 章5 번역표
+  {q:'.pairs .eyebrow span', en:"觀測 05 — 翻譯 · Two Languages, One Sky", ja:"觀測 05 — 翻譯 · 二つの言語、一つの空"},
+  {q:'.pairs h2', en:"The two systems are each other's <em>translations</em>.", ja:"二つの体系は、互いの<em>翻訳版</em>です。"},
+  {q:'.pairs .sub', en:"Two grammars that divided the same sky — strikingly parallel.", ja:"同じ空を分けた二つの文法は、驚くほど平行しています。"},
+  {q:'.xrow .k', n:0, en:"命理 · Five Elements", ja:"命理 · 五行"},
+  {q:'.xrow .t', n:0, en:"Wood · Fire · Earth · Metal · Water", ja:"木 · 火 · 土 · 金 · 水"},
+  {q:'.xrow .s', n:0, en:"A cycle of five energies — temperament read through generation (生) and control (剋).", ja:"五つの気の循環 — 相生と相剋で気質を読みます。"},
+  {q:'.xrow .k', n:1, en:"天文 · Four Elements × Three Modes", ja:"天文 · 四元素 × 三態"},
+  {q:'.xrow .t', n:1, en:"Fire · Earth · Air · Water × Cardinal · Fixed · Mutable", ja:"火 · 地 · 風 · 水 × 活動 · 固定 · 柔軟"},
+  {q:'.xrow .s', n:1, en:"4 × 3 = a grid of twelve temperaments — the West's answer to the same question.", ja:"4元素×3モード=十二気質の格子 — 同じ問いへの西洋の答え。"},
+  {q:'.xrow .k', n:2, en:"命理 · Four Pillars, Eight Characters", ja:"命理 · 四柱八字"},
+  {q:'.xrow .t', n:2, en:"Year · Month · Day · Hour — eight characters", ja:"年 · 月 · 日 · 時、八つの文字"},
+  {q:'.xrow .s', n:2, en:"The sky of your birth moment, written in stems and branches (干支).", ja:"生まれた瞬間の空を、干支で記したもの。"},
+  {q:'.xrow .k', n:3, en:"天文 · Natal Chart", ja:"天文 · ネイタルチャート"},
+  {q:'.xrow .t', n:3, en:"Natal chart — a map of the birth sky", ja:"出生天空図 — 生まれの空の地図"},
+  {q:'.xrow .s', n:3, en:"The same moment's sky, written in planetary coordinates.", ja:"同じ瞬間の空を、惑星の座標で記したもの。"},
+  {q:'.xrow .k', n:4, en:"命理 · Luck Cycles", ja:"命理 · 大運 · 歳運"},
+  {q:'.xrow .t', n:4, en:"Great Luck 10y · Year Luck 1y", ja:"大運10年 · 歳運1年"},
+  {q:'.xrow .s', n:4, en:"The Great Luck unrolls from your chart in a fixed order, ten years at a stride — the Year Luck overlays each year's stem-branch on the natal chart.", ja:"大運は命式から定まった順に開かれる10年の流れ — 歳運はその年の干支を原局に重ねて読みます。"},
+  {q:'.xrow .k', n:5, en:"天文 · Time-lord · Transit", ja:"天文 · タイムロード · トランジット"},
+  {q:'.xrow .t', n:5, en:"Time-lord techniques · Transits", ja:"タイムロード技法 · トランジット"},
+  {q:'.xrow .s', n:5, en:"Long cycles through time-lord procedures, where planets take turns ruling the seasons of a life — the present through transits laid over the chart.", ja:"長い周期は、惑星が順に時代を司るタイムロード技法で — いまこの時は惑星の現在位置(トランジット)をチャートに重ねて読みます。"},
+  {q:'.xnote', n:0, en:"This is not an equation (=) but a <b>correspondence (↔)</b>. Different grammars, one question — <b>&ldquo;With what energy was this person born, and which rhythm are they passing through now?&rdquo;</b>", ja:"これは等式(=)ではなく<b>相応(↔)</b>です。文法は違えど、問いは同じ — <b>「この人はどんな気を帯びて生まれ、いまどのリズムを通っているのか。」</b>"},
+  {q:'.xnote', n:1, en:"And this translation has precedent. The Hellenistic seven-day week reached East Asia through the 8th-century <i>Xiuyao-jing</i> (宿曜經), its seven bodies renamed for the Sun, Moon, and five elements. <b>月·火·水·木·金·土·日 — the East Asian week has been an East–West translation for 1,300 years.</b>", ja:"この翻訳には先例があります。ヘレニズムの七曜は8世紀の『宿曜経』を経て東アジアに届き、日・月と五行の名を得ました。<b>月・火・水・木・金・土・日 — あなたの曜日は、1300年続く東西の翻訳版です。</b>"},
+  // 章6 상응
+  {q:'.creed .eyebrow span', en:"觀法 06 — 相應 · Correspondence, Not Causation", ja:"觀法 06 — 相應 · 因果ではなく相応"},
+  {q:'.creed h2', en:"We do not claim Jupiter<br><em>controls</em> you.", ja:"木星があなたを<br><em>操っている</em>とは申しません。"},
+  {q:'.creed .body', n:0, en:"As the Moon makes the tide, the cosmos keeps <b>cycles</b>. For millennia humanity has used these rhythms as a <b>coordinate system</b> for life — the East in stems and branches, the West in planets. Semyeong (歲命) sets the two back under one sky.", ja:"月が潮を生むように、宇宙には<b>周期</b>があります。人類は数千年、このリズムを人生の<b>座標系</b>としてきました — 東は干支で、西は惑星で。歲命はその二つを、一つの空の下へ戻します。"},
+  {q:'.creed .body', n:1, en:"You read a map <b>to choose your own road</b>. <b>Those who know the wave, ride the wave.</b>", ja:"地図を読むのは、道を<b>自分で選ぶため</b>。<b>波を知る者が、波に乗るのです。</b>"},
+  {q:'.honest .t', en:"Our Honesty", ja:"私たちが守る正直"},
+  {q:'.honest p', n:0, en:"Semyeong sells no determinism. Astronomical computation is done <b>precisely, in code</b>; interpretation speaks <b>the language of correspondence</b>. The stars only draw a map of temperament and timing — <b>the choice is always yours</b>.", ja:"歲命は決定論を売りません。天文計算は<b>コードで精密に</b>、解釈は<b>相応の言葉で</b>。星は気質と時期の地図を描くだけ — <b>選ぶのは、いつもあなた</b>です。"},
+  {q:'.honest p', n:1, en:"Astronomical figures on this page follow NASA and standard references; historical claims follow sources such as the <i>Shiji</i> and <i>Huainanzi</i>.", ja:"このページの天文数値はNASA・標準的な天文学文献の公表値に、歴史記述は『史記・天官書』『淮南子・天文訓』などの史料に拠ります。"},
+  {q:'.seal-sub', en:"Know the future — yet fate is of your own making", ja:"未来を知り、命は己に由る"},
+  // booking
+  {q:'.book .eyebrow', en:"Free Reading · Your First Sentence", ja:"無料鑑定 · 最初の一文"},
+  {q:'.book h2', en:"What rhythm is crossing your sky, right now?", ja:"あなたの空には、いまどんなリズムが流れていますか。"},
+  {q:'.book .sub', en:"From your birth date and time, one <b style='color:var(--ink)'>sentence</b> where East and West reach the same conclusion — free.", ja:"生年月日時ひとつで、東洋と西洋が同じ結論に至る<b style='color:var(--ink)'>一文</b>を、無料でお送りします。"},
+  {q:'#tierPick span', en:"Your step — <b id='tierPickName'></b>", ja:"選択されたステップ — <b id='tierPickName'></b>"},
+  {q:'label[for="f-name"]', en:"Name", ja:"お名前"},
+  {q:'label[for="f-gender"]', en:"Gender", ja:"性別"},
+  {q:'label[for="f-date"]', en:"Birth date (solar)", ja:"生年月日(新暦)"},
+  {q:'label[for="f-time"]', en:"Birth time", ja:"出生時刻"},
+  {q:'label[for="f-place"]', en:"Birthplace", ja:"出生地"},
+  {q:'label[for="f-region"]', en:"Current region", ja:"お住まいの地域"},
+  {q:'label[for="f-phone"]', en:"Phone (KakaoTalk)", ja:"連絡先(カカオトーク受信)"},
+  {q:'#f-gender option', n:0, en:"Select", ja:"選択"},
+  {q:'#f-gender option', n:1, en:"Male", ja:"男性"},
+  {q:'#f-gender option', n:2, en:"Female", ja:"女性"},
+  {q:'#f-name', attr:'placeholder', en:"Jane Doe", ja:"山田花子"},
+  {q:'#f-place', attr:'placeholder', en:"Busan, Korea", ja:"釜山"},
+  {q:'#f-region', attr:'placeholder', en:"Busan, Yeongdo-gu", ja:"釜山 影島区"},
+  {q:'.consent label span', en:"<b>I consent to the collection and use of my personal data.</b> (required) <button type='button' class='more' onclick=\"const d=document.getElementById('consentDetail');d.hidden=!d.hidden\">Details</button>", ja:"<b>個人情報の収集・利用に同意します。</b>(必須) <button type='button' class='more' onclick=\"const d=document.getElementById('consentDetail');d.hidden=!d.hidden\">内容を見る</button>"},
+  {q:'#consentDetail', en:"· Collected: name, gender, birth date &amp; time, birthplace, region, phone (KakaoTalk)<br>· Purpose: preparing and sending your reading; service notices<br>· Retention: 1 year after service completion; deleted immediately upon request<br>· You may decline, but the service cannot be provided without consent.", ja:"· 収集項目:氏名、性別、生年月日時、出生地、居住地域、連絡先(カカオトーク)<br>· 利用目的:鑑定レポートの作成・送付およびサービスのご案内<br>· 保有期間:サービス提供完了後1年、破棄請求時は即時破棄<br>· 同意を拒否できますが、その場合サービスはご利用いただけません。"},
+  {q:'.step .t', n:0, en:"Apply", ja:"申し込み"},
+  {q:'.step .t', n:1, en:"Get your free sentence", ja:"無料の一文を受信"},
+  {q:'.step .t', n:2, en:"Pick a tier · pay", ja:"プラン選択・決済"},
+  {q:'.step .t', n:3, en:"Receive the report", ja:"レポート受領"},
+  // pricing
+  {q:'.pricing .eyebrow span', en:"歲命 · Three Steps", ja:"歲命 · 入会の三歩"},
+  {q:'.pricing h2', en:"Start free — walk to the <em>rhythm</em>.", ja:"無料から、<em>リズム</em>まで。"},
+  {q:'.pricing .sub', en:"The first sentence is free. Go deep once, or stay with the flow — you set the pace.", ja:"最初の一文は無料。深さが要るなら一度、流れが知りたいなら続けて — 歩みはあなたが決めます。"},
+  {q:'.tname', n:0, en:"1 · FREE", ja:"1 · 無料会員"},
+  {q:'.tprice', n:0, en:"0<small> ₩ · first sentence</small>", ja:"0<small>ウォン · 最初の一文</small>"},
+  {q:'.tdesc', n:0, en:"One sentence where East and West agree — from a single birth date and time", ja:"東西が同じ結論に至る一文 — 生年月日時ひとつで"},
+  {q:'.tier ul li', n:0, en:"One cross-checked sentence, East × West", ja:"東西クロス鑑定の一文"},
+  {q:'.tier ul li', n:1, en:"Delivered via KakaoTalk", ja:"カカオトークでお届け"},
+  {q:'.tier ul li', n:2, en:"No payment details needed", ja:"決済情報なしで申込"},
+  {q:'.tier .btn-ghost', n:0, en:"Start free", ja:"無料で始める"},
+  {q:'.tname', n:1, en:"2 · PAID — STELLAR", ja:"2 · 有料会員 — STELLAR"},
+  {q:'.tprice', n:1, en:"30,000<small> ₩ · one-time</small>", ja:"30,000<small>ウォン · 1回</small>"},
+  {q:'.tdesc', n:1, en:"Who you are — a unified East–West natal report", ja:"あなたが誰か — 東西統合の原局鑑定レポート"},
+  {q:'.tier ul li', n:3, en:"In-depth Saju natal analysis (structure · yongshin · luck cycles)", ja:"四柱原局の精密分析(格局・用神・大運)"},
+  {q:'.tier ul li', n:4, en:"Western natal chart analysis (planets · houses · aspects)", ja:"西洋ネイタルチャート分析(惑星・ハウス・アスペクト)"},
+  {q:'.tier ul li', n:5, en:"Cross-reading of East–West divergence points", ja:"東西クロスの発散点を立体的に洞察"},
+  {q:'.tier ul li', n:6, en:"Jargon-free prose report (15 sections, document included)", ja:"専門用語なしの散文レポート(15章、文書提供)"},
+  {q:'.tier .btn-ghost', n:1, en:"Order Stellar", ja:"ステラを申し込む"},
+  {q:'.tier .badge', en:"10 PER DAY", ja:"毎日10名限定"},
+  {q:'.tname', n:2, en:"3 · PREMIUM — DESTINY", ja:"3 · プレミアム — DESTINY"},
+  {q:'.tprice', n:2, en:"50,000<small> ₩ · 5 credits / month</small>", ja:"50,000<small>ウォン · 月5クレジット</small>"},
+  {q:'.tdesc', n:2, en:"Where your time is flowing — a companion membership", ja:"あなたの時間がどこへ流れるか — リズム伴走メンバーシップ"},
+  {q:'.tier ul li', n:7, en:"Everything in Stellar", ja:"ステラの全内容を含む"},
+  {q:'.tier ul li', n:8, en:"Your daily fortune, every morning", ja:"毎朝、今日の運勢をお届け"},
+  {q:'.tier ul li', n:9, en:"Two 1:1 consultations a month", ja:"1:1相談 月2回"},
+  {q:'.tier ul li', n:10, en:"Monthly flow report (year luck · transits)", ja:"月間運勢レポート(歳運・トランジット)"},
+  {q:'.tier ul li', n:11, en:"Credits spend freely — daily luck, compatibility, date-picking and more", ja:"クレジット自由使用 — 日運・相性・択日など全領域"},
+  {q:'.tier ul li', n:12, en:"Credits roll over · cancel anytime", ja:"残クレジット繰越 · いつでも解約"},
+  {q:'.tier ul li', n:13, en:"Premium admits only 10 people a day", ja:"プレミアム入会は毎日10名限定"},
+  {q:'.tier .btn', en:"Start Premium <span class='arw'>→</span>", ja:"プレミアムを始める <span class='arw'>→</span>"},
+  // share cta
+  {q:'.cta .ktxt', en:"Share via KakaoTalk", ja:"カカオトークで共有"},
+  {q:'.cta .note', en:"Premium: 10 a day · 歲命 JUPITER · 知未來 命由己", ja:"プレミアム毎日10名限定 · 歲命 JUPITER · 知未來 命由己"}
+];
+const PAGE_TITLE = {ko:"歲命 · JUPITER — 우주의 리듬을 읽다", en:"歲命 JUPITER — Reading the Rhythms of the Cosmos", ja:"歲命 JUPITER — 宇宙のリズムを読む"};
+const KO_CACHE = new Map();
+function applyLang(l){
+  try{
+    for(const e of I18N){
+      try{
+        const el = document.querySelectorAll(e.q)[e.n||0];
+        if(!el) continue;
+        const key = e.q+'#'+(e.n||0)+'#'+(e.attr||'');
+        if(!KO_CACHE.has(key)) KO_CACHE.set(key, e.attr ? el.getAttribute(e.attr) : el.innerHTML);
+        const v = (l==='ko') ? KO_CACHE.get(key) : e[l];
+        if(v==null) continue;
+        if(e.attr) el.setAttribute(e.attr, v); else el.innerHTML = v;
+      }catch(_){}
+    }
+    document.documentElement.lang = l;
+    document.documentElement.dataset.lang = l;
+    document.title = PAGE_TITLE[l] || PAGE_TITLE.ko;
+    // 연락처: 국내(카카오) 형식 ↔ 국제 형식
+    const ph = document.getElementById('f-phone');
+    if(l==='ko'){ ph.pattern='01[0-9]-?[0-9]{3,4}-?[0-9]{4}'; ph.placeholder='010-0000-0000'; ph.title='010-0000-0000 형식으로 입력해 주세요'; }
+    else{ ph.pattern='[0-9+\\-\\s]{8,16}'; ph.placeholder='+82 10-0000-0000'; ph.title = l==='ja' ? '国番号を含めてご入力ください' : 'Include your country code'; }
+    window.LANG = l;
+    try{ localStorage.setItem('semyeong_lang', l); }catch(_){}
+    document.querySelectorAll('.langs button').forEach(b=>b.setAttribute('aria-current', b.dataset.l===l ? 'true':'false'));
+    applyTierUI(document.getElementById('f-tier').value);   // 칩·제출 버튼 문구 동기화
+    const m=document.getElementById('fmsg'); m.textContent=''; m.className='fmsg';
+  }catch(_){}
+}
+// 초기 언어: ?lang= > localStorage > ko
+(function(){try{
+  let l = new URLSearchParams(location.search).get('lang');
+  if(l!=='en'&&l!=='ja') l = localStorage.getItem('semyeong_lang');
+  if(l==='en'||l==='ja') applyLang(l);
+}catch(_){}})();
+</script>
+
+<!-- ===== 카카오톡 공유 SDK =====
+     1) Kakao Developers(developers.kakao.com)에서 앱 생성 → JavaScript 키 발급
+     2) 내 애플리케이션 > 플랫폼 > Web 에 배포 도메인 등록 (미등록 시 공유 작동 안 함)
+     3) 위 'YOUR_JAVASCRIPT_KEY' 와 링크 주소를 실제 값으로 교체
+     4) 배포 시 developers.kakao.com이 안내하는 integrity(SRI) 해시 추가 권장 -->
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"></script>
+
+</body>
+</html>
