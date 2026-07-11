@@ -829,6 +829,14 @@
     document.getElementById('f-date').max = new Date(_d.getTime()-_d.getTimezoneOffset()*60000).toISOString().slice(0,10);
   }catch(e){}
 
+  /* 공유 문구: 두 공유 버튼(카카오·텔레그램)이 공용, 현재 언어를 따름 */
+  const SHARE_TITLES = {ko:'歲命 · JUPITER — 우주의 리듬을 읽다', en:'歲命 JUPITER — Reading the Rhythms of the Cosmos', ja:'歲命 JUPITER — 宇宙のリズムを読む'};
+  const SHARE_DESCS  = {ko:'사주(四柱)와 천문(天文)의 융합 — 행성들의 주기가 당신의 삶에 리듬을 새깁니다.',
+                        en:'Four Pillars meets astrology — the planets\' cycles carve rhythms into your life.',
+                        ja:'四柱と天文の融合 — 惑星の周期があなたの人生にリズムを刻みます。'};
+  const SHARE_BTN    = {ko:'무료 진단 받기', en:'Get a free reading', ja:'無料鑑定を受ける'};
+  const shareUrl = () => SITE_URL + '/?lang=' + (window.LANG || 'ko');   // 언어 고정 링크: 받는 사람이 같은 언어로 봄
+
   // SDK가 나중에 로드되므로 초기화는 사용 시점에 (lazy)
   function kakaoReady(){
     try{ if(window.Kakao && !Kakao.isInitialized() && KAKAO_KEY!=='YOUR_JAVASCRIPT_KEY') Kakao.init(KAKAO_KEY); }catch(e){}
@@ -836,33 +844,38 @@
   }
 
   function shareKakao(){
+    const L = window.LANG || 'ko';
+    const u = shareUrl();
     if(!kakaoReady()){
-      // 공유 SDK 미설정/미로드 → 링크 복사 폴백
-      const manual=()=>alert('주소창의 링크를 복사해 카카오톡에 붙여넣어 주십시오. 카드가 표시됩니다.');
+      // 공유 SDK 미설정/미로드 → 링크 복사 폴백 (현재 언어로 안내)
+      const COPIED = {ko:'링크가 복사되었습니다. 카카오톡에 붙여넣으면 카드가 표시됩니다.',
+                      en:'Link copied — paste it into KakaoTalk to show the preview card.',
+                      ja:'リンクをコピーしました。カカオトークに貼り付けるとカードが表示されます。'};
+      const MANUAL = {ko:'주소창의 링크를 복사해 카카오톡에 붙여넣어 주십시오. 카드가 표시됩니다.',
+                      en:'Please copy the address-bar link and paste it into KakaoTalk.',
+                      ja:'アドレスバーのリンクをコピーしてカカオトークに貼り付けてください。'};
+      const manual=()=>alert(MANUAL[L]);
       if(navigator.clipboard && navigator.clipboard.writeText){
-        navigator.clipboard.writeText(location.href).then(
-          ()=>alert('링크가 복사되었습니다. 카카오톡에 붙여넣으면 카드가 표시됩니다.'), manual);
+        navigator.clipboard.writeText(u).then(()=>alert(COPIED[L]), manual);
       } else manual();
       return;
     }
     Kakao.Share.sendDefault({
       objectType:'feed',
       content:{
-        title:'歲命 · JUPITER — 우주의 리듬을 읽다',
-        description:'사주(四柱)와 천문(天文)의 융합 — 행성들의 주기가 당신의 삶에 리듬을 새깁니다.',
+        title: SHARE_TITLES[L],
+        description: SHARE_DESCS[L],
         imageUrl: SITE_URL + '/og-image.png',
-        link:{ mobileWebUrl:SITE_URL, webUrl:SITE_URL }
+        link:{ mobileWebUrl:u, webUrl:u }
       },
-      buttons:[{ title:'무료 진단 받기', link:{ mobileWebUrl:SITE_URL, webUrl:SITE_URL } }]
+      buttons:[{ title: SHARE_BTN[L], link:{ mobileWebUrl:u, webUrl:u } }]
     });
   }
 
   /* 텔레그램 공유: SDK·키 불필요, og 카드 자동 표시. 현재 언어의 링크·제목으로 공유 */
   function shareTelegram(){
     const L = window.LANG || 'ko';
-    const titles = {ko:'歲命 · JUPITER — 우주의 리듬을 읽다', en:'歲命 JUPITER — Reading the Rhythms of the Cosmos', ja:'歲命 JUPITER — 宇宙のリズムを読む'};
-    const u = SITE_URL + (L==='ko' ? '' : '/?lang='+L);
-    window.open('https://t.me/share/url?url='+encodeURIComponent(u)+'&text='+encodeURIComponent(titles[L]), '_blank', 'noopener');
+    window.open('https://t.me/share/url?url='+encodeURIComponent(shareUrl())+'&text='+encodeURIComponent(SHARE_TITLES[L]), '_blank', 'noopener');
   }
 
   /* ===== stellar_booking 연동 =====
@@ -931,16 +944,18 @@
         signal: (window.AbortSignal && AbortSignal.timeout) ? AbortSignal.timeout(10000) : undefined
       });
       if(!r.ok) throw new Error(r.status);
+      const L2 = window.LANG || 'ko';   // 응답 대기 중 언어가 바뀌었을 수 있음 — 표시 시점 언어로
       msg.className = 'fmsg ok';
       msg.textContent = (data.tier === 'free' || !TIERS[data.tier])
-        ? FMSG.okFree[L]
-        : FMSG.okPaid[L]((TIERS[data.tier].name[L] || TIERS[data.tier].name.ko).split(' · ')[0]);
+        ? FMSG.okFree[L2]
+        : FMSG.okPaid[L2]((TIERS[data.tier].name[L2] || TIERS[data.tier].name.ko).split(' · ')[0]);
       f.reset();
       applyTierUI('free'); // reset이 숨은 tier 필드를 free로 되돌리므로 칩·버튼도 동기화
     }catch(err){
+      const L2 = window.LANG || 'ko';
       msg.className = 'fmsg err';
       const s = +err.message;
-      msg.textContent = (s>=400 && s<500) ? FMSG.err4[L] : FMSG.err5[L];
+      msg.textContent = (s>=400 && s<500) ? FMSG.err4[L2] : FMSG.err5[L2];
     }finally{
       btn.disabled = false;
     }
@@ -1089,7 +1104,7 @@ function applyLang(l){
     for(const e of I18N){
       try{
         const el = document.querySelectorAll(e.q)[e.n||0];
-        if(!el) continue;
+        if(!el){ console.warn('[i18n] 대상 없음:', e.q, e.n||0); continue; }   // 콘텐츠 수정 시 인덱스 어긋남 조기 발견용
         const key = e.q+'#'+(e.n||0)+'#'+(e.attr||'');
         if(!KO_CACHE.has(key)) KO_CACHE.set(key, e.attr ? el.getAttribute(e.attr) : el.innerHTML);
         const v = (l==='ko') ? KO_CACHE.get(key) : e[l];
@@ -1102,8 +1117,8 @@ function applyLang(l){
     document.title = PAGE_TITLE[l] || PAGE_TITLE.ko;
     // 연락처: 국내(카카오) 형식 ↔ 국제 형식
     const ph = document.getElementById('f-phone');
-    if(l==='ko'){ ph.pattern='01[0-9]-?[0-9]{3,4}-?[0-9]{4}'; ph.placeholder='010-0000-0000'; ph.title='010-0000-0000 형식으로 입력해 주세요'; }
-    else{ ph.pattern='[0-9+\\-\\s]{8,16}'; ph.placeholder='+82 10-0000-0000'; ph.title = l==='ja' ? '国番号を含めてご入力ください' : 'Include your country code'; }
+    if(l==='ko'){ ph.pattern='01[0-9]-?[0-9]{3,4}-?[0-9]{4}'; ph.placeholder='010-0000-0000'; ph.maxLength=13; ph.title='010-0000-0000 형식으로 입력해 주세요'; }
+    else{ ph.pattern='[0-9+\\-\\s]{8,16}'; ph.placeholder='+82 10-0000-0000'; ph.maxLength=16; ph.title = l==='ja' ? '国番号を含めてご入力ください' : 'Include your country code'; }
     window.LANG = l;
     try{ localStorage.setItem('semyeong_lang', l); }catch(_){}
     document.querySelectorAll('.langs button').forEach(b=>b.setAttribute('aria-current', b.dataset.l===l ? 'true':'false'));
@@ -1114,8 +1129,8 @@ function applyLang(l){
 // 초기 언어: ?lang= > localStorage > ko
 (function(){try{
   let l = new URLSearchParams(location.search).get('lang');
-  if(l!=='en'&&l!=='ja') l = localStorage.getItem('semyeong_lang');
-  if(l==='en'||l==='ja') applyLang(l);
+  if(l!=='ko'&&l!=='en'&&l!=='ja') l = localStorage.getItem('semyeong_lang');   // ?lang=ko도 명시적 지정으로 존중
+  if(l==='ko'||l==='en'||l==='ja') applyLang(l);
 }catch(_){}})();
 </script>
 
