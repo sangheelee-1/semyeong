@@ -161,7 +161,7 @@
 
   /* nine clocks viz (행성 주기) */
   .clockviz{width:min(470px,86vw)}
-  .clockviz .el{font-family:"Noto Serif KR",serif;font-size:15px;fill:var(--gold-soft)}
+  .clockviz .el{font-family:"Noto Serif KR",serif;font-size:15px;fill:var(--gold-soft);paint-order:stroke;stroke:var(--space);stroke-width:5px;stroke-linejoin:round} /* 우주색 후광: 행성 점이 글자를 지나도 겹쳐 보이지 않게 */
   .clockviz .cap{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:2px;fill:var(--ink-dim)}
 
   /* ============ SIGNATURE: 12-year orbit → 십이지 ============ */
@@ -379,7 +379,8 @@
         <!-- pull vector -->
         <line x1="282" y1="200" x2="326" y2="200" stroke="var(--gold)" stroke-width="1.4" opacity=".7"/>
         <polygon points="326,200 318,196 318,204" fill="var(--gold)" opacity=".7"/>
-        <text x="200" y="330" text-anchor="middle" font-family="JetBrains Mono" font-size="10" letter-spacing="2" fill="#9a95a8">GRAVITY · 引力</text>
+        <!-- 캡션을 달 궤도(r150+달17=367) 바깥으로 — 애니메이션 중 겹침 방지 -->
+        <text x="200" y="392" text-anchor="middle" font-family="JetBrains Mono" font-size="10" letter-spacing="2" fill="#9a95a8">GRAVITY · 引力</text>
       </svg>
     </div>
   </section>
@@ -977,7 +978,7 @@ const I18N = [
   {q:'.scaleviz .lbl', n:1, en:"Diameter <tspan class='lbl-gold'>×11</tspan>", ja:"直径 <tspan class='lbl-gold'>×11</tspan>"},
   // 章4 세성기년
   {q:'.sig .eyebrow span', en:"觀測 04 — 歲星紀年 · The Calendar Jupiter Carved", ja:"觀測 04 — 歲星紀年 · 木星が刻んだ暦"},
-  {q:'.sig h2', en:"One lap of the sky takes Jupiter <em>about 12 years.</em>", ja:"木星が空を一周するのに、<em>およそ12年。</em>"},
+  {q:'.sig h2', en:"One lap of the sky takes Jupiter <em>about 12 years.</em>", ja:"木星が空を一周するのに<br><em>およそ12年。</em>"},
   {q:'.sig .lead', en:"Ancient astronomers divided that orbit into twelve — and <b style='color:var(--ink)'>the zodiac animal of your birth year</b> comes from there. The West divided the same sky into twelve as well. <b style='color:var(--ink)'>East and West arrived at the same structure.</b>", ja:"古代の天文家はこの軌道を十二に分け — 年ごとに変わるあなたの<b style='color:var(--ink)'>「干支」</b>はここから来ています。西洋も同じ空を十二宮に分けました。<b style='color:var(--ink)'>東と西が同じ構造にたどり着いた</b>のです。"},
   {q:'.orbit-cap .k', n:0, en:"天文 · Fact", ja:"天文 · 事実"},
   {q:'.orbit-cap .v', n:0, en:"Jupiter's period: <b>11.86 years</b> — naming the years by its position was <b>歲星紀年</b>, the Jupiter-year count (<i>Shiji</i>).", ja:"木星の公転周期<b>11.86年</b> — その位置で年に名を与えたのが<b>歲星紀年</b>(『史記・天官書』)です。"},
