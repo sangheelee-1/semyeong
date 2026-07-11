@@ -94,6 +94,9 @@
   /* 한자 독음 루비: 아주 작은 한글 읽기 보조 (디자인 무해 범위) */
   rt{font-family:"Noto Sans KR",sans-serif;font-weight:300;font-size:max(.42em,9px);color:var(--ink-dim);letter-spacing:.05em;opacity:.85}
   /* 언어 전환: EN/JA에서는 한글 독음 숨김, JA는 일본어 폰트로 */
+  /* JA 조판: keep-all(한국어 단어 단위 줄바꿈)은 띄어쓰기 없는 일본어에서 문장을 한 덩어리로 만들어
+     그리드 컬럼을 밀어냄 → 글자 단위 줄바꿈 + 금칙(line-break:strict)으로 전환 */
+  html[data-lang="ja"] body,html[data-lang="ja"] h1,html[data-lang="ja"] h2,html[data-lang="ja"] h3{word-break:normal;overflow-wrap:anywhere;line-break:strict}
   html[data-lang="en"] rt,html[data-lang="ja"] rt{display:none}
   html[data-lang="ja"] body,html[data-lang="ja"] .fg input,html[data-lang="ja"] .fg select{font-family:"Noto Sans JP","Noto Sans KR",sans-serif}
   html[data-lang="ja"] :is(h1,h2,h3,.hanja,.tprice,.seal,.ask,.ask-sm,.lead,.brandmark,.xrow .t){font-family:"Noto Serif JP","Noto Serif KR",serif}
