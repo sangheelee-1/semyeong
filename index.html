@@ -102,6 +102,7 @@
     pointer-events:none;user-select:none;
   }
   .stele small{display:block;writing-mode:vertical-rl;font-family:"IBM Plex Mono",monospace;font-size:.6rem;letter-spacing:.5em;color:var(--ink-dim);margin-top:18px}
+  @media(max-width:1080px){.stele{opacity:.5}}
   @media(max-width:820px){.stele{font-size:clamp(40px,9vh,72px);right:16px;opacity:.28}}
 
   /* 관측 타임스탬프 (mono, 사실만) */
@@ -382,7 +383,7 @@
   <!-- ============ HERO ============ -->
   <section class="hero" style="position:relative">
     <div class="stele" aria-hidden="true">歲命</div>
-    <div class="stamp rv in" id="obsStamp">OBS · <b id="obsNow"></b></div>
+    <div class="stamp rv in" id="obsStamp"><span class="obs-k">OBS</span> · <b id="obsNow"></b></div>
     <div class="kicker rv in">四柱 × 天文 · 사주와 천문의 융합 · 목성의 관법</div>
     <h1 class="rv in d1">달이, 바다를 <span class="accent">움직입니다.</span></h1>
     <p class="sub rv in d2"><b>밀물과 썰물 — 하루 두 번, 어김없는 리듬.</b><br>38만 킬로미터 밖 달의 인력이 만드는, 과학이 확인한 사실입니다.</p>
@@ -822,8 +823,13 @@
     const p=v.play(); if(p&&p.catch) p.catch(()=>{}); // 자동재생 차단 시 포스터로 조용히 폴백
     // 히어로가 화면 밖이면 디코딩 중지 (배터리·구형 기기 보호)
     if('IntersectionObserver' in window){
+      const bg=document.querySelector('.jupiter-bg img');
       new IntersectionObserver(es=>{
-        es.forEach(e=>{ if(e.isIntersecting){ const q=v.play(); if(q&&q.catch)q.catch(()=>{}); } else v.pause(); });
+        es.forEach(e=>{
+          if(e.isIntersecting){ const q=v.play(); if(q&&q.catch)q.catch(()=>{}); }
+          else v.pause();
+          if(bg) bg.style.animationPlayState = e.isIntersecting ? 'paused' : 'running'; // 영상이 덮는 동안 드리프트 정지
+        });
       },{threshold:.05}).observe(v);
     }
   }
@@ -841,7 +847,8 @@
     const d=new Date(),z=n=>String(n).padStart(2,'0');
     el.textContent=d.getFullYear()+'.'+z(d.getMonth()+1)+'.'+z(d.getDate())+' '+D[d.getDay()]+'曜 '+z(d.getHours())+':'+z(d.getMinutes());
   }
-  fmt(); setInterval(fmt,30000);
+  fmt(); const t=setInterval(fmt,30000);
+  addEventListener('pagehide',()=>clearInterval(t),{once:true});
 }catch(e){}})();
 
 /* ---------- reveal on scroll ---------- */
@@ -1068,6 +1075,7 @@
    q=선택자, n=몇 번째 매치(기본 0), attr 지정 시 속성 교체. */
 const I18N = [
   // hero
+  {q:'.stamp .obs-k', en:"OBS", ja:"観測"},
   {q:'.kicker', en:"四柱 × 天文 · Four Pillars meets Astrology · The Way of Jupiter", ja:"四柱 × 天文 · 四柱と天文の融合 · 木星の観法"},
   {q:'.hero h1', en:"The Moon <span class='accent'>moves the sea.</span>", ja:"月が、海を<span class='accent'>動かしています。</span>"},
   {q:'.hero .sub', en:"<b>Ebb and flow — twice a day, without fail.</b><br>The pull of the Moon, 380,000 km away. A fact confirmed by science.", ja:"<b>満ち潮と引き潮 — 一日二度、違わぬリズム。</b><br>38万キロ彼方の月の引力が生む、科学が確かめた事実です。"},
